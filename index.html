@@ -464,12 +464,35 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
       }
     });
   });
+  // Pasted text can be one number, or several lines of "Name  number" (e.g. from the iPhone Shortcut or a shared contact)
+  function importText(t){
+    var lines = String(t || "").split(/\n+/).map(function(l){ return l.trim(); }).filter(Boolean), found = [];
+    lines.forEach(function(l){
+      var m = l.match(/\+?[\d][\d\s().-]{8,}\d/); if(!m) return;
+      var ph = m[0], nm = l.replace(ph, "").replace(/\b(mobile|cell|iphone|home|work|main)\b/ig, "").replace(/[^A-Za-z\u00C0-\u024F' .-]+/g, " ").trim();
+      if(!/[A-Za-z\u00C0-\u024F]/.test(nm)) nm = "";
+      found.push({first: firstName(nm), phone: ph});
+    });
+    return found;
+  }
   $("btn-paste").addEventListener("click", function(){
     navigator.clipboard.readText().then(function(t){
-      var v = normalize(t);
-      if(!v){ $("add-err").textContent = "Nothing that looks like a phone number on the clipboard. Copy the number from Contacts first."; return; }
-      $("m-phone").value = pretty(v); $("add-err").textContent = "";
-      if(firstName($("m-name").value)) submitManual(); else { toast("Number pasted — now their first name"); $("m-name").focus(); }
+      var items = importText(t);
+      if(!items.length){ $("add-err").textContent = "Nothing that looks like a phone number on the clipboard. Copy the number from Contacts first."; return; }
+      if(items.length === 1 && !items[0].first){
+        $("m-phone").value = pretty(normalize(items[0].phone) || items[0].phone); $("add-err").textContent = "";
+        if(firstName($("m-name").value)) submitManual(); else { toast("Number pasted — now their first name"); $("m-name").focus(); }
+        return;
+      }
+      var added = 0, issues = 0, over = 0;
+      items.forEach(function(it){
+        if(S.people.length >= MAX){ over++; return; }
+        if(!it.first){ issues++; return; }
+        var e = addPerson(it.first, [it.phone]); if(e) issues++; else added++;
+      });
+      $("add-err").textContent = over ? "Only the first 10 were added." : (issues ? issues + (issues === 1 ? " line was" : " lines were") + " skipped (no name or no mobile number)." : "");
+      if(added) toast(added + (added === 1 ? " person" : " people") + " added");
+      renderPick();
     }).catch(function(){ $("add-err").textContent = "Paste wasn't allowed — press and hold the number box and choose Paste."; $("m-phone").focus(); });
   });
   $("to-tone").addEventListener("click", function(){ if(S.people.length) go("s-tone"); });

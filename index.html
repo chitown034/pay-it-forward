@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pay It Forward with Steven</title>
+<meta name="description" content="Introduce a veteran you know to Steven Shearrill, Navy veteran and VA home loan specialist, with one personal text.">
+<meta name="theme-color" content="#1C2B4A">
+<meta name="robots" content="noindex">
+<meta name="format-detection" content="telephone=no">
+</head>
+<body>
+<style>
+:root{
+  --navy:#1C2B4A; --navy-ink:#FFFFFF; --amber:#F2A31B; --amber-ink:#1A1405; --amber-text:#8A5A00;
+  --bg:#F3F4F7; --card:#FFFFFF; --ink:#16213A; --muted:#566077; --line:#DCE0E8; --chip:#EEF1F6;
+  --ok:#1F7A4D; --ok-bg:#E7F4EC; --warn:#B4462B;
+  --head:#1C2B4A; --head-ink:#FFFFFF; --head-sub:#D5DBEA;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1422; --card:#161F33; --ink:#E8ECF4; --muted:#9AA4B8; --line:#2A3550; --chip:#1F2A42;
+  --navy:#F2A31B; --navy-ink:#1A1405; --amber-text:#F2C46B; --ok:#4CC08A; --ok-bg:#15301F; --warn:#E07A5F;
+  --head:#121B2E; --head-ink:#FFFFFF; --head-sub:#B9C2D6; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1422; --card:#161F33; --ink:#E8ECF4; --muted:#9AA4B8; --line:#2A3550; --chip:#1F2A42;
+  --navy:#F2A31B; --navy-ink:#1A1405; --amber-text:#F2C46B; --ok:#4CC08A; --ok-bg:#15301F; --warn:#E07A5F;
+  --head:#121B2E; --head-ink:#FFFFFF; --head-sub:#B9C2D6; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:17px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;margin:0}
+.top{background:var(--head);color:var(--head-ink);padding-block:18px 20px;padding-inline:16px}
+.top .in{max-width:560px;margin:0 auto;display:flex;gap:14px;align-items:center}
+.badge{width:52px;height:52px;border-radius:50%;background:#F2A31B;color:#1A1405;display:grid;place-items:center;font-weight:800;font-size:18px;flex:none}
+.top b{display:block;font-size:19px}
+.top span{color:var(--head-sub);font-size:14px}
+main{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:16px 28px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber-text);font-weight:700;margin-bottom:4px}
+h1{font-size:26px;line-height:1.15;margin:0 0 8px;text-wrap:balance}
+h2{font-size:22px;line-height:1.2;margin:0 0 6px;text-wrap:balance}
+.sub{color:var(--muted);font-size:15px;margin:0 0 14px}
+ol.how{list-style:none;margin:14px 0 16px;padding:0;display:grid;gap:10px}
+ol.how li{display:flex;gap:12px;align-items:flex-start;font-size:15.5px}
+ol.how .n{width:26px;height:26px;border-radius:50%;background:#F2A31B;color:#1A1405;font-weight:800;display:grid;place-items:center;flex:none;font-size:14px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;border-radius:12px;border:0;font-family:inherit;font-weight:700;font-size:17px;line-height:1.1;cursor:pointer;text-decoration:none;padding:12px 16px;text-align:center}
+.btn-primary{background:var(--navy);color:var(--navy-ink)}
+.btn-amber{background:#F2A31B;color:#1A1405}
+.btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn[disabled]{opacity:.45;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1 1 140px}
+.links{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}
+.link{background:none;border:0;color:var(--muted);font-family:inherit;font-weight:600;font-size:15px;text-decoration:underline;cursor:pointer;padding:10px 2px}
+.counter{font-weight:700;font-variant-numeric:tabular-nums}.counter.full{color:var(--amber-text)}
+label{display:block;font-size:14px;font-weight:600;margin:12px 0 4px}
+input[type=text],input[type=tel],textarea{width:100%;font-family:inherit;font-size:17px;padding:12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+textarea{min-height:190px;resize:vertical;line-height:1.4}
+input:focus,textarea:focus,.btn:focus-visible,.tone:focus-visible,.link:focus-visible,.copy:focus-visible,.prow:focus-visible{outline:3px solid #F2A31B;outline-offset:2px}
+.hint{background:var(--chip);border-radius:10px;padding:10px 12px;font-size:14px;color:var(--ink);margin:10px 0 6px}
+.hint.hot{box-shadow:0 0 0 2px #F2A31B inset}
+.hint small{display:block;color:var(--muted);margin-top:4px}
+.err{color:var(--warn);font-size:14px;min-height:1.2em;margin:6px 0 0}
+details.manual{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px}
+details.manual summary{cursor:pointer;font-weight:600;font-size:15px;color:var(--ink)}
+ul.people{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px}
+ul.people li{display:flex;align-items:center;gap:10px;background:var(--chip);border-radius:10px;padding:10px 12px}
+.grow{flex:1;min-width:0}.nm{font-weight:700}.ph{color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
+select{font-family:inherit;font-size:14px;max-width:100%;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:4px}
+.x{border:0;background:none;color:var(--muted);font-size:24px;line-height:1;padding:4px 8px;cursor:pointer}
+.tones{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tone{text-align:left;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:12px;font-family:inherit;cursor:pointer}
+.tone b{display:block;font-size:16px}.tone span{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.tone[aria-pressed=true]{border-color:#F2A31B;box-shadow:0 0 0 2px #F2A31B inset}
+.sample{background:var(--chip);border-radius:12px;padding:12px;font-size:15px;margin-top:12px;white-space:pre-wrap}
+.meta{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);margin-top:6px}
+.meta .over{color:var(--warn);font-weight:700}
+.note{background:var(--ok-bg);border:1px solid var(--ok);border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:15px}
+.note b{color:var(--ok)}
+.progress{display:flex;gap:4px;margin:6px 0 12px}.progress i{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.progress i.s{background:var(--ok)}.progress i.k{background:var(--muted);opacity:.5}.progress i.c{background:#F2A31B}
+.plist{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.prow{border:1.5px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden}
+.prow.cur{border-color:#F2A31B;box-shadow:0 0 0 2px #F2A31B inset}
+.prow.sent{background:var(--ok-bg);border-color:var(--ok)}
+.prow .head{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;width:100%;background:none;border:0;font-family:inherit;color:var(--ink);text-align:left;font-size:17px}
+.prow .head .st{margin-left:auto;font-size:13px;color:var(--muted);font-weight:600;white-space:nowrap}
+.prow.sent .head .st{color:var(--ok)}
+.prow .body{padding:0 14px 14px}
+.prow .pill{display:inline-block;background:var(--chip);border-radius:999px;padding:4px 10px;font-size:13px;margin:0 6px 8px 0}
+.fallback{border-top:1px dashed var(--line);margin-top:12px;padding-top:10px;font-size:14px}
+.fallback summary{cursor:pointer;font-weight:600;color:var(--ink)}
+.numrow{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--chip);border-radius:10px;padding:8px 10px;margin-top:8px}
+.numrow b{font-variant-numeric:tabular-nums}
+.copy{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;font-family:inherit;font-weight:600;font-size:14px;padding:6px 10px;cursor:pointer}
+.stats{display:flex;gap:12px;margin:6px 0 14px}.stats div{flex:1;background:var(--chip);border-radius:12px;padding:12px;text-align:center}
+.stats b{display:block;font-size:30px;font-variant-numeric:tabular-nums}
+.privacy{font-size:13px;color:var(--muted);text-align:center;margin:10px 4px 0}
+.deskonly{background:var(--chip);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:12px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 18px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw;text-align:center}
+.toast.on{opacity:1}
+footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;font-size:12px;color:var(--muted);text-align:center;line-height:1.5}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+
+<header class="top"><div class="in">
+  <div class="badge" aria-hidden="true">SS</div>
+  <div><b>Steven Shearrill</b><span>Navy Veteran · VA Home Loans · (619) 368-7141</span></div>
+</div></header>
+
+<main>
+  <!-- Welcome -->
+  <section id="s-welcome" class="card">
+    <div class="eyebrow">Pay it forward</div>
+    <h1>Thanks for coming today</h1>
+    <p class="sub">Know a vet who should be using their VA benefit? Introduce them to Steven with one personal text. It takes about a minute, and it comes from you, not a stranger.</p>
+    <ol class="how">
+      <li><span class="n">1</span><span>Pick up to 10 people from your phone's contacts</span></li>
+      <li><span class="n">2</span><span>Choose a tone. The intro writes itself with each first name</span></li>
+      <li><span class="n">3</span><span>Read each one, tweak anything, then send them all at the end. Each person gets their own 3-way text with you and Steven</span></li>
+    </ol>
+    <button class="btn btn-primary" id="go-pick" type="button">Pick contacts</button>
+    <p class="privacy">Your contacts stay on your phone. Nothing is uploaded.</p>
+    <div class="deskonly" id="desk-note" hidden>This works best on your phone. Scan the QR code, or open this page in Safari or Chrome on your phone.</div>
+  </section>
+
+  <!-- Step 1: pick -->
+  <section id="s-pick" class="card" hidden>
+    <div class="eyebrow">Step 1 of 3</div>
+    <h2>Who comes to mind?</h2>
+    <p class="sub">Veterans, service members, military spouses, or anyone thinking about buying.</p>
+    <div class="links" style="margin:0 0 6px"><span class="counter" id="count" aria-live="polite">0 of 10 selected</span></div>
+    <button class="btn btn-amber" id="btn-picker" type="button" hidden>Choose from my contacts</button>
+    <button class="btn btn-amber" id="btn-picker-ios" type="button" hidden>Choose from my contacts</button>
+    <div class="hint" id="and-hint" hidden><b>Add people from your Contacts:</b> open your <b>Contacts</b> app, press and hold the person's mobile number to <b>Copy</b> it, come back here, press and hold the <b>Mobile number</b> box and tap <b>Paste</b>. Type their first name and tap <b>Add person</b>. Repeat for the next person.
+      <small>Chrome only opens the phone's contact picker on a full-screen page, so this page uses copy-and-paste instead.</small></div>
+    <div class="hint" id="ios-hint" hidden><b>Pick straight from your Contacts:</b> with the cursor in <b>First name</b>, look just above the keyboard and tap <b>AutoFill Contact</b> (the contact-card icon). Choose the person — their name and mobile number fill in and they're added to your list. Repeat for the next person.
+      <small>Don't see it? Type the name and number instead. (Safari › AutoFill › Contact Info must be on.)</small></div>
+    <form id="manual" autocomplete="on" novalidate>
+      <label for="m-name">First name</label>
+      <input type="text" id="m-name" name="fname" autocomplete="given-name" autocapitalize="words" enterkeyhint="next" placeholder="Michael">
+      <label for="m-phone">Mobile number</label>
+      <div class="row" style="gap:8px"><input type="tel" id="m-phone" name="tel" autocomplete="tel" inputmode="tel" enterkeyhint="done" placeholder="(702) 555-0123" style="flex:1 1 180px"><button class="btn btn-ghost" id="btn-paste" type="button" hidden style="flex:0 0 auto;min-height:0;padding:0 14px">Paste</button></div>
+      <p class="err" id="add-err" role="alert"></p>
+      <button class="btn btn-ghost" id="btn-add" type="submit">Add person</button>
+    </form>
+    <ul class="people" id="people" aria-label="People you picked"></ul>
+    <div style="margin-top:14px"><button class="btn btn-primary" id="to-tone" type="button" disabled>Continue</button></div>
+    <div class="links"><button class="link" type="button" data-go="s-welcome">Back</button></div>
+  </section>
+
+  <!-- Step 2: tone -->
+  <section id="s-tone" class="card" hidden>
+    <div class="eyebrow">Step 2 of 3</div>
+    <h2>Pick a tone</h2>
+    <p class="sub">Each person's first name drops in automatically. You'll read every message before anything sends.</p>
+    <div class="tones" role="group" aria-label="Message tone">
+      <button class="tone" type="button" data-tone="default" aria-pressed="true"><b>Default</b><span>Warm, a little story</span></button>
+      <button class="tone" type="button" data-tone="short" aria-pressed="false"><b>Short</b><span>Quick and to the point</span></button>
+      <button class="tone" type="button" data-tone="family" aria-pressed="false"><b>Family</b><span>For relatives &amp; close friends</span></button>
+      <button class="tone" type="button" data-tone="direct" aria-pressed="false"><b>Direct</b><span>Straight to it</span></button>
+    </div>
+    <div class="sample" id="tone-sample"></div>
+    <div id="tpl-wrap" hidden>
+      <label for="tpl">Your wording for everyone (keep <b>[First Name]</b> where their name should go)</label>
+      <textarea id="tpl"></textarea>
+      <div class="meta"><span id="tpl-len"></span><button class="link" type="button" id="tpl-reset" style="padding:0">Reset to tone</button></div>
+    </div>
+    <div style="margin-top:14px"><button class="btn btn-primary" id="to-send" type="button">Review and send</button></div>
+    <div class="links"><button class="link" type="button" data-go="s-pick">Back</button><button class="link" type="button" id="tpl-toggle">Edit wording for everyone</button><button class="link" type="button" id="skip-tone">Skip, use Default</button></div>
+  </section>
+
+  <!-- Step 3: review and send all -->
+  <section id="s-send" class="card" hidden>
+    <div class="eyebrow">Step 3 of 3</div>
+    <h2 id="send-title">Read, then send</h2>
+    <p class="sub" id="send-sub">Each tap opens Messages with the group text ready — you, Steven and that person. Hit send there, come back here, and the next one is waiting.</p>
+    <div class="note" id="sent-note" hidden></div>
+    <div class="progress" id="progress" aria-hidden="true"></div>
+    <ul class="plist" id="plist" aria-label="People to introduce"></ul>
+    <div style="margin-top:14px"><button class="btn btn-primary" id="btn-finish" type="button" hidden>Finish</button></div>
+    <div class="links"><button class="link" type="button" data-go="s-tone">Back</button><button class="link" type="button" id="skip-rest">Skip the rest</button></div>
+  </section>
+
+  <!-- Done -->
+  <section id="s-done" class="card" hidden>
+    <h2>Thank you. That means a lot.</h2>
+    <p class="sub">Steven will reply in each thread and take it from there. You don't need to do anything else.</p>
+    <div class="stats"><div><b id="n-sent">0</b>introduced</div><div><b id="n-skip">0</b>skipped</div></div>
+    <button class="btn btn-ghost" id="more" type="button">Introduce more people</button>
+    <a class="btn btn-amber" id="call-steven" href="tel:+16193687141" style="margin-top:10px">Call Steven · (619) 368-7141</a>
+    <p style="margin:10px 0 0;text-align:center" class="sub">Or save his number: <b>(619) 368-7141</b> <button class="copy" type="button" data-copy="steven">Copy</button></p>
+  </section>
+</main>
+
+<footer>
+  Steven Shearrill · MLO NMLS #2449246 · Patriot Pacific Financial Corp · NMLS #1921615 · DRE #02103516<br>
+  20-Year Navy Veteran · Equal Housing Opportunity. This is not a commitment to lend.
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  "use strict";
+  var STEVEN = "+16193687141", STEVEN_PRETTY = "(619) 368-7141", MAX = 10, SOFT = 300, TOKEN = "[First Name]";
+  var TONES = {
+    default: "Hey [First Name], hope you're good. Adding Steven here — he ran a VA homebuying seminar I went to today and I thought of you the whole time. Navy vet, does VA home loans, and he'll walk you through your benefits for free.\n\nSteven, this is [First Name]. Take care of them.",
+    short:   "Hey [First Name], adding Steven — Navy vet who does VA home loans. Went to his seminar today and thought of you. He'll walk you through your benefits for free.\n\nSteven, meet [First Name].",
+    family:  "Hey [First Name], love you. Adding Steven here — I went to his VA homebuying seminar today and kept thinking about you. He's a Navy vet, does VA loans, and will go over your benefits for free. No pressure, just talk to him.\n\nSteven, this is [First Name]. They're family, take good care of them.",
+    direct:  "[First Name], you should be using your VA home loan benefit. Adding Steven — Navy vet, VA loan specialist, ran the seminar I went to today. He'll walk you through it for free.\n\nSteven, this is [First Name]. Take care of them."
+  };
+
+  var ua = navigator.userAgent || "";
+  var isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  var isAndroid = /Android/i.test(ua);
+  var isMobile = isIOS || isAndroid;
+  var hasPicker = false, inFrame = false, pickerBlocked = false, canPaste = false;
+  try { hasPicker = ("contacts" in navigator) && ("ContactsManager" in window) && typeof navigator.contacts.select === "function"; } catch(e) {}
+  try { inFrame = window.top !== window.self; } catch(e) { inFrame = true; }
+  try {
+    canPaste = !!(navigator.clipboard && navigator.clipboard.readText);
+    var pp = document.permissionsPolicy || document.featurePolicy;
+    if(canPaste && pp && typeof pp.allowsFeature === "function") canPaste = pp.allowsFeature("clipboard-read");
+  } catch(e) {}
+  // The contact picker only works on a page that owns the whole tab; inside a frame it is refused.
+  if(hasPicker && inFrame) pickerBlocked = true;
+
+  function $(id){ return document.getElementById(id); }
+  var KEY = "pif-v3";
+  function fresh(){ return {screen:"s-welcome", people:[], tone:"default", custom:null, i:0, last:-1}; }
+  function load(){ try { var s = sessionStorage.getItem(KEY); return s ? JSON.parse(s) : null; } catch(e) { return null; } }
+  function sanitize(o){
+    if(!o || typeof o !== "object" || !Array.isArray(o.people)) return null;
+    var f = fresh();
+    f.screen = ["s-welcome","s-pick","s-tone","s-send","s-done"].indexOf(o.screen) >= 0 ? o.screen : "s-welcome";
+    f.tone = TONES[o.tone] ? o.tone : "default";
+    f.people = o.people.slice(0, MAX).filter(function(p){ return p && typeof p.phone === "string" && /^\+\d{10,15}$/.test(p.phone); }).map(function(p){
+      return { first: String(p.first||"").slice(0,40), nick: typeof p.nick === "string" ? p.nick.slice(0,40) : null,
+               phone: p.phone, options: Array.isArray(p.options) ? p.options.filter(function(x){ return /^\+\d{10,15}$/.test(x); }).slice(0,6) : [p.phone],
+               status: ["pending","sent","skipped"].indexOf(p.status) >= 0 ? p.status : "pending",
+               draft: typeof p.draft === "string" ? p.draft.slice(0,1200) : null };
+    });
+    f.i = Math.max(0, Math.min(o.i|0, Math.max(0, f.people.length - 1)));
+    f.custom = typeof o.custom === "string" ? o.custom.slice(0,1200) : null;
+    f.last = typeof o.last === "number" ? o.last : -1;
+    return f;
+  }
+  var S = sanitize(load()) || fresh();
+  function save(){ try { sessionStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} }
+  function wipe(){ try { sessionStorage.removeItem(KEY); } catch(e) {} }
+
+  function firstName(full){ var n = String(full||"").trim().split(/\s+/)[0] || ""; return n.slice(0,40); }
+  function normalize(raw){
+    var s = String(raw||"").trim(), plus = s.charAt(0) === "+", d = s.replace(/\D/g,"");
+    if(!plus && d.length === 10) return "+1" + d;
+    if(d.length === 11 && d.charAt(0) === "1") return "+" + d;
+    if(plus && d.length >= 10 && d.length <= 15) return "+" + d;
+    return null;
+  }
+  function pretty(e){ var m = /^\+1(\d{3})(\d{3})(\d{4})$/.exec(e); return m ? "(" + m[1] + ") " + m[2] + "-" + m[3] : e; }
+  function fill(t, name){ return t.split(TOKEN).join(name || "there"); }
+  function call(p){ return p.nick || p.first; }
+  function template(){ return S.custom != null ? S.custom : TONES[S.tone]; }
+  function textFor(p){ return p.draft != null ? p.draft : fill(template(), call(p)); }
+  function smsLink(friend, body){
+    var addrs = STEVEN + "," + friend, b = encodeURIComponent(body);
+    return isIOS ? ("sms:/open?addresses=" + addrs + "&body=" + b) : ("sms:" + addrs + "?body=" + b);
+  }
+  var toastT;
+  function toast(t, ms){ var el = $("toast"); el.textContent = t; el.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(function(){ el.classList.remove("on"); }, ms || 1800); }
+  function copy(text, label){
+    function done(){ toast(label + " copied"); }
+    try {
+      if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done, legacy); return; }
+    } catch(e) {}
+    legacy();
+    function legacy(){
+      var ta = document.createElement("textarea"); ta.value = text; ta.setAttribute("readonly",""); ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, text.length);
+      var ok = false; try { ok = document.execCommand("copy"); } catch(e) {}
+      document.body.removeChild(ta); toast(ok ? label + " copied" : "Press and hold to copy");
+    }
+  }
+  function nextPending(from){ for(var k = from + 1; k < S.people.length; k++){ if(S.people[k].status === "pending") return k; } return -1; }
+
+  // ---------- navigation ----------
+  var SCREENS = ["s-welcome","s-pick","s-tone","s-send","s-done"];
+  function go(id){
+    S.screen = id; save();
+    SCREENS.forEach(function(s){ $(s).hidden = (s !== id); });
+    if(id === "s-welcome") $("desk-note").hidden = isMobile;
+    if(id === "s-pick") renderPick();
+    if(id === "s-tone") renderTone();
+    if(id === "s-send") renderSend();
+    if(id === "s-done") renderDone();
+    try { window.scrollTo(0,0); } catch(e) {}
+  }
+  document.addEventListener("click", function(ev){
+    var b = ev.target.closest("[data-go]"); if(b){ go(b.getAttribute("data-go")); return; }
+    var c = ev.target.closest("[data-copy]");
+    if(c){
+      var k = c.getAttribute("data-copy"), p = S.people[+c.getAttribute("data-idx")];
+      if(k === "steven") copy(STEVEN_PRETTY, "Steven's number");
+      if(k === "friend" && p) copy(pretty(p.phone), call(p) + "'s number");
+      if(k === "msg" && p) copy(textFor(p), "Message");
+    }
+  });
+
+  // ---------- step 1: pick ----------
+  function renderPick(){
+    var native = hasPicker && !pickerBlocked;
+    $("btn-picker").hidden = !native;
+    $("btn-picker-ios").hidden = !(isIOS && !native);
+    $("ios-hint").hidden = !(isIOS && !native);
+    $("and-hint").hidden = !(isAndroid && !native);
+    $("btn-paste").hidden = !(isMobile && canPaste);
+    var ul = $("people"); ul.innerHTML = "";
+    S.people.forEach(function(p, idx){
+      var li = document.createElement("li"), g = document.createElement("div"); g.className = "grow";
+      var nm = document.createElement("div"); nm.className = "nm"; nm.textContent = p.first || "(no name)"; g.appendChild(nm);
+      if(p.options && p.options.length > 1){
+        var sel = document.createElement("select"); sel.setAttribute("aria-label", "Number for " + (p.first || "contact"));
+        p.options.forEach(function(o){ var op = document.createElement("option"); op.value = o; op.textContent = pretty(o); op.selected = (o === p.phone); sel.appendChild(op); });
+        sel.addEventListener("change", function(){ p.phone = sel.value; save(); }); g.appendChild(sel);
+      } else { var ph = document.createElement("div"); ph.className = "ph"; ph.textContent = pretty(p.phone); g.appendChild(ph); }
+      var x = document.createElement("button"); x.type = "button"; x.className = "x"; x.setAttribute("aria-label", "Remove " + (p.first || "contact")); x.textContent = "×";
+      x.addEventListener("click", function(){ S.people.splice(idx, 1); save(); renderPick(); });
+      li.appendChild(g); li.appendChild(x); ul.appendChild(li);
+    });
+    var n = S.people.length, c = $("count");
+    c.textContent = n + " of " + MAX + " selected"; c.className = "counter" + (n >= MAX ? " full" : "");
+    $("to-tone").disabled = n === 0;
+    $("to-tone").textContent = n ? "Continue with " + n + (n === 1 ? " person" : " people") : "Continue";
+    $("btn-add").disabled = $("m-name").disabled = $("m-phone").disabled = n >= MAX;
+  }
+  function addPerson(first, phones){
+    if(S.people.length >= MAX) return "That's 10 — the most for one round.";
+    var opts = [], isSteven = false;
+    phones.forEach(function(p){ var v = normalize(p); if(v === STEVEN){ isSteven = true; return; } if(v && opts.indexOf(v) < 0) opts.push(v); });
+    if(!opts.length) return isSteven ? "That's Steven's number — he's already in every thread." : "That doesn't look like a mobile number. Try 10 digits, like (702) 555-0123.";
+    if(S.people.some(function(q){ return opts.indexOf(q.phone) >= 0; })) return (first || "That person") + " is already on your list.";
+    S.people.push({first: first, nick: null, phone: opts[0], options: opts, status: "pending", draft: null});
+    save(); return "";
+  }
+  function submitManual(){
+    var f = firstName($("m-name").value), ph = $("m-phone").value;
+    if(!f){ $("add-err").textContent = "Add their first name so the message can greet them."; $("m-name").focus(); return; }
+    var e = addPerson(f, [ph]); $("add-err").textContent = e;
+    if(!e){ $("m-name").value = ""; $("m-phone").value = ""; toast(f + " added"); }
+    renderPick();
+  }
+  $("manual").addEventListener("submit", function(ev){ ev.preventDefault(); submitManual(); });
+  // iPhone: Safari's "AutoFill Contact" fills both fields at once -> add automatically, then re-focus for the next person
+  var fillT;
+  function maybeAuto(){
+    clearTimeout(fillT);
+    fillT = setTimeout(function(){
+      var f = firstName($("m-name").value), ph = $("m-phone").value;
+      if(f && normalize(ph) && document.activeElement !== $("m-phone")){
+        submitManual();
+        if(isIOS && S.people.length < MAX){ try { $("m-name").focus(); } catch(e) {} }
+      }
+    }, 350);
+  }
+  ["m-name","m-phone"].forEach(function(id){
+    $(id).addEventListener("input", function(e){ if(!e.inputType || e.inputType === "insertReplacementText") maybeAuto(); });
+    $(id).addEventListener("change", maybeAuto);
+  });
+  $("btn-picker-ios").addEventListener("click", function(){
+    if(S.people.length >= MAX){ $("add-err").textContent = "That's 10 — the most for one round."; return; }
+    var h = $("ios-hint"); h.classList.add("hot"); setTimeout(function(){ h.classList.remove("hot"); }, 2500);
+    $("m-name").focus();
+    toast("Tap AutoFill Contact above the keyboard", 2600);
+  });
+  $("btn-picker").addEventListener("click", function(){
+    if(S.people.length >= MAX){ $("add-err").textContent = "That's 10 — the most for one round."; return; }
+    navigator.contacts.select(["name","tel"], {multiple: true}).then(function(list){
+      pickerBlocked = false;
+      var added = 0, issues = 0, over = 0;
+      (list || []).forEach(function(c){
+        if(S.people.length >= MAX){ over++; return; }
+        var e = addPerson(firstName((c.name || [])[0]), c.tel || []); if(e) issues++; else added++;
+      });
+      $("add-err").textContent = over ? "Only the first 10 were added." : (issues ? issues + (issues === 1 ? " contact had" : " contacts had") + " no usable mobile number or was already listed." : "");
+      if(added) toast(added + (added === 1 ? " person" : " people") + " added");
+      renderPick();
+    }).catch(function(err){
+      // Closed by the user -> nothing to do. Refused by the browser (frame, no gesture) -> switch to copy-and-paste.
+      if(err && (err.name === "InvalidStateError" || err.name === "SecurityError" || err.name === "NotAllowedError")){
+        pickerBlocked = true; renderPick(); toast("Chrome won't open Contacts from this page — copy and paste the number instead", 3200);
+        var h = $("and-hint"); h.classList.add("hot"); setTimeout(function(){ h.classList.remove("hot"); }, 2500);
+      }
+    });
+  });
+  $("btn-paste").addEventListener("click", function(){
+    navigator.clipboard.readText().then(function(t){
+      var v = normalize(t);
+      if(!v){ $("add-err").textContent = "Nothing that looks like a phone number on the clipboard. Copy the number from Contacts first."; return; }
+      $("m-phone").value = pretty(v); $("add-err").textContent = "";
+      if(firstName($("m-name").value)) submitManual(); else { toast("Number pasted — now their first name"); $("m-name").focus(); }
+    }).catch(function(){ $("add-err").textContent = "Paste wasn't allowed — press and hold the number box and choose Paste."; $("m-phone").focus(); });
+  });
+  $("to-tone").addEventListener("click", function(){ if(S.people.length) go("s-tone"); });
+  $("go-pick").addEventListener("click", function(){ go("s-pick"); });
+
+  // ---------- step 2: tone ----------
+  function renderTone(){
+    document.querySelectorAll(".tone").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-tone") === S.tone ? "true" : "false"); });
+    var p = S.people[0]; $("tone-sample").textContent = fill(template(), p ? call(p) : "Michael");
+    $("tpl").value = template(); tplLen();
+    $("tpl-wrap").hidden = S.custom == null && $("tpl-wrap").hidden;
+  }
+  function tplLen(){ var n = fill($("tpl").value, "Michael").length; $("tpl-len").textContent = n + " / " + SOFT + " with a typical name" + (n > SOFT ? " · shorter is safer" : ""); $("tpl-len").className = n > SOFT ? "over" : ""; }
+  document.querySelector(".tones").addEventListener("click", function(ev){
+    var b = ev.target.closest(".tone"); if(!b) return;
+    S.tone = b.getAttribute("data-tone"); S.custom = null;
+    S.people.forEach(function(p){ if(p.status === "pending") p.draft = null; });
+    save(); renderTone();
+  });
+  $("tpl-toggle").addEventListener("click", function(){ $("tpl-wrap").hidden = !$("tpl-wrap").hidden; if(!$("tpl-wrap").hidden) $("tpl").focus(); });
+  $("tpl").addEventListener("input", function(){
+    var v = $("tpl").value; S.custom = (v.trim() && v !== TONES[S.tone]) ? v : null;
+    S.people.forEach(function(p){ if(p.status === "pending") p.draft = null; });
+    var p = S.people[0]; $("tone-sample").textContent = fill(template(), p ? call(p) : "Michael"); tplLen(); save();
+  });
+  $("tpl-reset").addEventListener("click", function(){ S.custom = null; S.people.forEach(function(p){ if(p.status === "pending") p.draft = null; }); save(); renderTone(); });
+  function startSend(){ S.i = nextPending(-1); S.last = -1; save(); go(S.i < 0 ? "s-done" : "s-send"); }
+  $("to-send").addEventListener("click", startSend);
+  $("skip-tone").addEventListener("click", function(){ S.tone = "default"; S.custom = null; S.people.forEach(function(p){ if(p.status === "pending") p.draft = null; }); startSend(); });
+
+  // ---------- step 3: review and send all ----------
+  var open = -1; // which row is expanded
+  function renderSend(){
+    if(S.i < 0 || !S.people[S.i] || S.people[S.i].status !== "pending") S.i = nextPending(-1);
+    open = S.i;
+    var sent = S.people.filter(function(p){ return p.status === "sent"; }).length;
+    var left = S.people.filter(function(p){ return p.status === "pending"; }).length;
+    $("send-title").textContent = left ? "Read, then send" : "All done here";
+    var note = $("sent-note");
+    if(S.last >= 0 && S.people[S.last] && S.people[S.last].status === "sent"){
+      note.hidden = false; note.innerHTML = "";
+      var b = document.createElement("b"); b.textContent = "Sent to " + call(S.people[S.last]) + "."; note.appendChild(b);
+      note.appendChild(document.createTextNode(S.i >= 0 ? " Next up: " + call(S.people[S.i]) + " →" : " That was the last one."));
+    } else note.hidden = true;
+    var pr = $("progress"); pr.innerHTML = "";
+    S.people.forEach(function(p, k){ var i = document.createElement("i"); i.className = p.status === "sent" ? "s" : p.status === "skipped" ? "k" : (k === S.i ? "c" : ""); pr.appendChild(i); });
+    $("btn-finish").hidden = left > 0; $("skip-rest").hidden = left === 0;
+    $("btn-finish").textContent = sent ? "Finish — " + sent + " introduced" : "Finish";
+    drawList();
+  }
+  function drawList(){
+    var ul = $("plist"); ul.innerHTML = "";
+    S.people.forEach(function(p, k){
+      var li = document.createElement("li"); li.className = "prow" + (p.status === "sent" ? " sent" : "") + (k === S.i && p.status === "pending" ? " cur" : "");
+      var head = document.createElement("button"); head.type = "button"; head.className = "head"; head.setAttribute("aria-expanded", open === k ? "true" : "false");
+      var nm = document.createElement("b"); nm.textContent = (k + 1) + ". " + p.first; head.appendChild(nm);
+      var st = document.createElement("span"); st.className = "st";
+      st.textContent = p.status === "sent" ? "Sent ✓" : p.status === "skipped" ? "Skipped" : (k === S.i ? "Up next" : "Ready");
+      head.appendChild(st);
+      head.addEventListener("click", function(){ open = (open === k) ? -1 : k; drawList(); });
+      li.appendChild(head);
+      if(open === k){
+        var body = document.createElement("div"); body.className = "body";
+        var to = document.createElement("div");
+        [ "To: " + p.first + " " + pretty(p.phone), "Steven", "+ you" ].forEach(function(t){ var s = document.createElement("span"); s.className = "pill"; s.textContent = t; to.appendChild(s); });
+        body.appendChild(to);
+        if(p.status === "pending"){
+          var l1 = document.createElement("label"); l1.textContent = "What do you call them?"; l1.setAttribute("for", "nick-" + k); body.appendChild(l1);
+          var nick = document.createElement("input"); nick.type = "text"; nick.id = "nick-" + k; nick.value = call(p); nick.autocomplete = "off"; body.appendChild(nick);
+          var l2 = document.createElement("label"); l2.textContent = "Their message (edit anything)"; l2.setAttribute("for", "msg-" + k); body.appendChild(l2);
+          var ta = document.createElement("textarea"); ta.id = "msg-" + k; ta.value = textFor(p); body.appendChild(ta);
+          var meta = document.createElement("div"); meta.className = "meta";
+          var len = document.createElement("span"); var reset = document.createElement("button"); reset.type = "button"; reset.className = "link"; reset.style.padding = "0"; reset.textContent = "Reset";
+          meta.appendChild(len); meta.appendChild(reset); body.appendChild(meta);
+          function upd(){ var n = ta.value.length; len.textContent = n + " / " + SOFT + (n > SOFT ? " · shorter is safer on older phones" : ""); len.className = n > SOFT ? "over" : ""; a.href = smsLink(p.phone, ta.value); }
+          ta.addEventListener("input", function(){ p.draft = ta.value; save(); upd(); });
+          nick.addEventListener("input", function(){
+            var old = call(p), nv = nick.value.trim().slice(0,40);
+            p.nick = nv && nv !== p.first ? nv : null;
+            var cur = ta.value; if(old && nv) cur = cur.split(old).join(nv);
+            p.draft = cur; ta.value = cur; save(); upd();
+          });
+          reset.addEventListener("click", function(){ p.draft = null; p.nick = null; nick.value = p.first; ta.value = textFor(p); save(); upd(); });
+          var row = document.createElement("div"); row.className = "row"; row.style.marginTop = "12px";
+          var a = document.createElement("a"); a.className = "btn btn-amber"; a.target = "_blank"; a.rel = "noopener"; a.textContent = "Send to " + p.first; a.href = smsLink(p.phone, ta.value);
+          a.addEventListener("click", function(ev){ onSendClick(ev, k, a, ta, fb); });
+          row.appendChild(a);
+          var skip = document.createElement("button"); skip.type = "button"; skip.className = "btn btn-ghost"; skip.style.flex = "0 1 120px"; skip.textContent = "Skip";
+          skip.addEventListener("click", function(){ p.status = "skipped"; S.last = -1; if(S.i === k) S.i = nextPending(k) >= 0 ? nextPending(k) : nextPending(-1); save(); renderSend(); });
+          row.appendChild(skip); body.appendChild(row);
+          var fb = document.createElement("details"); fb.className = "fallback";
+          fb.innerHTML = '<summary>Messages didn\'t open? Send it by hand</summary><p style="margin:8px 0 0">Start a new group text with these two numbers, then paste the message.</p>';
+          [["Steven", STEVEN_PRETTY, "steven"], [p.first, pretty(p.phone), "friend"], ["Their message", "", "msg"]].forEach(function(r){
+            var d = document.createElement("div"); d.className = "numrow";
+            var s = document.createElement("span"); s.textContent = r[0] + " "; if(r[1]){ var bb = document.createElement("b"); bb.textContent = r[1]; s.appendChild(bb); }
+            var c = document.createElement("button"); c.type = "button"; c.className = "copy"; c.textContent = "Copy"; c.setAttribute("data-copy", r[2]); c.setAttribute("data-idx", String(k));
+            d.appendChild(s); d.appendChild(c); fb.appendChild(d);
+          });
+          var ms = document.createElement("button"); ms.type = "button"; ms.className = "btn btn-primary"; ms.style.marginTop = "10px"; ms.textContent = "I sent it";
+          ms.addEventListener("click", function(){ markSent(k); }); fb.appendChild(ms);
+          body.appendChild(fb);
+          upd();
+        } else {
+          var txt = document.createElement("div"); txt.className = "sample"; txt.style.marginTop = "4px"; txt.textContent = textFor(p); body.appendChild(txt);
+          var links = document.createElement("div"); links.className = "links";
+          var retry = document.createElement("button"); retry.type = "button"; retry.className = "link"; retry.textContent = p.status === "sent" ? "Didn't send? Retry" : "Put back in the list";
+          retry.addEventListener("click", function(){ p.status = "pending"; S.last = -1; S.i = k; save(); renderSend(); });
+          links.appendChild(retry); body.appendChild(links);
+        }
+        li.appendChild(body);
+      }
+      ul.appendChild(li);
+    });
+  }
+  function markSent(k){
+    var p = S.people[k]; if(!p) return;
+    p.status = "sent"; S.last = k; S.i = nextPending(k) >= 0 ? nextPending(k) : nextPending(-1); save();
+    if(S.i >= 0) toast("Sent to " + call(p) + ". Next up: " + call(S.people[S.i]), 2200); else toast("Sent to " + call(p) + ". That was the last one.", 2200);
+    renderSend();
+  }
+  // Opening Messages: the page can't see whether they hit send, so it watches the screen.
+  // If the page goes to the background, Messages took over -> count it as sent when they come back.
+  // If the page never leaves the screen, try once more, then show the copy-and-paste fallback.
+  var sendPending = -1, wentHidden = false;
+  function onHidden(){ if(sendPending >= 0) wentHidden = true; }
+  document.addEventListener("pagehide", onHidden);
+  document.addEventListener("visibilitychange", function(){
+    if(document.visibilityState === "hidden"){ onHidden(); return; }
+    if(sendPending >= 0 && wentHidden){ var k = sendPending; sendPending = -1; wentHidden = false; markSent(k); return; }
+    if(S.screen){ SCREENS.forEach(function(s){ $(s).hidden = (s !== S.screen); }); }
+  });
+  function onSendClick(ev, k, a, ta, fb){
+    var p = S.people[k]; if(!p){ ev.preventDefault(); return; }
+    if(!isMobile){ ev.preventDefault(); copy(ta.value, "Message"); fb.open = true; toast("On a phone this opens Messages. Message copied."); return; }
+    a.href = smsLink(p.phone, ta.value); var href = a.href;
+    sendPending = k; wentHidden = false;
+    setTimeout(function(){
+      if(!(sendPending === k && !wentHidden && document.visibilityState === "visible")) return;
+      try { window.location.href = href; } catch(e) {}
+      setTimeout(function(){
+        if(sendPending === k && !wentHidden && document.visibilityState === "visible"){
+          sendPending = -1; fb.open = true;
+          toast("Messages didn't open here — use the copy buttons");
+          try { fb.scrollIntoView({behavior: "smooth", block: "start"}); } catch(e) {}
+        }
+      }, 1500);
+    }, 1800);
+  }
+  $("skip-rest").addEventListener("click", function(){ S.people.forEach(function(p){ if(p.status === "pending") p.status = "skipped"; }); S.i = -1; S.last = -1; save(); go("s-done"); });
+  $("btn-finish").addEventListener("click", function(){ go("s-done"); });
+
+  // ---------- done ----------
+  function renderDone(){
+    $("n-sent").textContent = S.people.filter(function(p){ return p.status === "sent"; }).length;
+    $("n-skip").textContent = S.people.filter(function(p){ return p.status === "skipped"; }).length;
+    S = fresh(); S.screen = "s-done"; wipe(); // nothing kept once you're finished
+  }
+  $("more").addEventListener("click", function(){ S = fresh(); wipe(); go("s-pick"); });
+
+  go(S.screen || "s-welcome");
+})();
+</script>
+
+</body>
+</html>

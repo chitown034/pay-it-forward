@@ -108,6 +108,15 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
 </div></header>
 
 <main>
+  <!-- Forward to the full-screen copy (lets Android open the phone's contact picker) -->
+  <section id="s-forward" class="card" style="border-color:#F2A31B;box-shadow:0 0 0 2px #F2A31B inset">
+    <div class="eyebrow">One tap to start</div>
+    <h2>Open the Pay It Forward page</h2>
+    <p class="sub">The full-screen version lets your phone pick people straight from Contacts. It opens in your browser; nothing to install.</p>
+    <a class="btn btn-amber" id="fwd" href="https://chitown034.github.io/pay-it-forward/" target="_blank" rel="noopener">Continue →</a>
+    <p class="privacy" style="margin-top:10px">Didn't open? <button class="link" type="button" id="fwd-stay" style="padding:0">Continue right here instead</button></p>
+  </section>
+
   <!-- Welcome -->
   <section id="s-welcome" class="card">
     <div class="eyebrow">Pay it forward</div>
@@ -131,13 +140,20 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
     <div class="links" style="margin:0 0 6px"><span class="counter" id="count" aria-live="polite">0 of 10 selected</span></div>
     <button class="btn btn-amber" id="btn-picker" type="button" hidden>Choose from my contacts</button>
     <button class="btn btn-amber" id="btn-picker-ios" type="button" hidden>Choose from my contacts</button>
+    <div class="hint" id="browser-hint" hidden><b>This browser can't open your Contacts.</b> <span id="browser-why"></span>
+      <a class="btn btn-primary" id="open-browser" href="#" style="margin-top:10px">Open in Chrome</a></div>
     <div class="hint" id="and-hint" hidden><b>Add people from your Contacts:</b> open your <b>Contacts</b> app, press and hold the person's mobile number to <b>Copy</b> it, come back here, press and hold the <b>Mobile number</b> box and tap <b>Paste</b>. Type their first name and tap <b>Add person</b>. Repeat for the next person.
-      <small>Chrome only opens the phone's contact picker on a full-screen page, so this page uses copy-and-paste instead.</small></div>
-    <div class="hint" id="ios-hint" hidden><b>Pick straight from your Contacts:</b> with the cursor in <b>First name</b>, look just above the keyboard and tap <b>AutoFill Contact</b> (the contact-card icon). Choose the person — their name and mobile number fill in and they're added to your list. Repeat for the next person.
-      <small>Don't see it? Type the name and number instead. (Safari › AutoFill › Contact Info must be on.)</small></div>
+      <small>Used when the phone's contact picker can't open here (Chrome only allows it on a full-screen page).</small></div>
+    <div class="hint" id="ios-hint" hidden><b>Pick from your Contacts on iPhone:</b>
+      <ol style="margin:6px 0 0;padding-left:20px"><li>Tap the <b>First name</b> box so the keyboard opens.</li><li>Just above the keyboard, tap <b>AutoFill Contact</b> (the contact-card icon), then <b>Other Contact…</b> — your Contacts list opens.</li><li>Pick the person. Their name and mobile number fill in and they're added. Repeat for the next person.</li></ol>
+      <small>No AutoFill button? Turn on Settings › Apps › Safari › AutoFill › <b>Use Contact Info</b> — or <button class="link" type="button" id="vcf-open" style="padding:0;font-size:inherit">import several people at once from a contacts file</button>.</small></div>
+    <div class="hint" id="vcf-hint" hidden><b>Add several people at once (iPhone):</b>
+      <ol style="margin:6px 0 0;padding-left:20px"><li>Open the <b>Contacts</b> app, press and hold a name, tap <b>Select Contacts</b>, and tick up to 10 people.</li><li>Tap <b>Share</b> → <b>Save to Files</b>.</li><li>Come back here and tap <b>Choose contacts file</b>, then pick that file.</li></ol>
+      <button class="btn btn-ghost" id="vcf-btn" type="button" style="margin-top:10px">Choose contacts file</button>
+      <input type="file" id="vcf" accept=".vcf,text/vcard,text/x-vcard,text/directory" multiple hidden></div>
     <form id="manual" autocomplete="on" novalidate>
       <label for="m-name">First name</label>
-      <input type="text" id="m-name" name="fname" autocomplete="given-name" autocapitalize="words" enterkeyhint="next" placeholder="Michael">
+      <input type="text" id="m-name" name="name" autocomplete="name" autocapitalize="words" enterkeyhint="next" placeholder="Michael">
       <label for="m-phone">Mobile number</label>
       <div class="row" style="gap:8px"><input type="tel" id="m-phone" name="tel" autocomplete="tel" inputmode="tel" enterkeyhint="done" placeholder="(702) 555-0123" style="flex:1 1 180px"><button class="btn btn-ghost" id="btn-paste" type="button" hidden style="flex:0 0 auto;min-height:0;padding:0 14px">Paste</button></div>
       <p class="err" id="add-err" role="alert"></p>
@@ -212,6 +228,9 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
   var ua = navigator.userAgent || "";
   var isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   var isAndroid = /Android/i.test(ua);
+  // In-app browsers (Instagram, Facebook, LinkedIn, TikTok, Gmail…) and non-Chrome Android browsers can't open Contacts.
+  var inApp = /FBAN|FBAV|Instagram|LinkedInApp|Twitter|TikTok|BytedanceWebview|Line\/|Snapchat|GSA\//i.test(ua) || (isIOS && !/Safari\//.test(ua)) || (isAndroid && /; wv\)/.test(ua));
+  var SITE = "https://chitown034.github.io/pay-it-forward/";
   var isMobile = isIOS || isAndroid;
   var hasPicker = false, inFrame = false, pickerBlocked = false, canPaste = false;
   try { hasPicker = ("contacts" in navigator) && ("ContactsManager" in window) && typeof navigator.contacts.select === "function"; } catch(e) {}
@@ -226,7 +245,7 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
 
   function $(id){ return document.getElementById(id); }
   var KEY = "pif-v3";
-  function fresh(){ return {screen:"s-welcome", people:[], tone:"default", custom:null, i:0, last:-1}; }
+  function fresh(){ return {screen:"s-welcome", people:[], tone:"default", custom:null, i:0, last:-1, stay:false, vcf:false}; }
   function load(){ try { var s = sessionStorage.getItem(KEY); return s ? JSON.parse(s) : null; } catch(e) { return null; } }
   function sanitize(o){
     if(!o || typeof o !== "object" || !Array.isArray(o.people)) return null;
@@ -242,6 +261,7 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
     f.i = Math.max(0, Math.min(o.i|0, Math.max(0, f.people.length - 1)));
     f.custom = typeof o.custom === "string" ? o.custom.slice(0,1200) : null;
     f.last = typeof o.last === "number" ? o.last : -1;
+    f.stay = o.stay === true; f.vcf = o.vcf === true;
     return f;
   }
   var S = sanitize(load()) || fresh();
@@ -284,8 +304,11 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
 
   // ---------- navigation ----------
   var SCREENS = ["s-welcome","s-pick","s-tone","s-send","s-done"];
+  // Forward card: shown on the welcome screen when this copy is embedded (e.g. the Claude-hosted link).
+  var FWD = "https://chitown034.github.io/pay-it-forward/";
+  function showForward(id){ var f = $("s-forward"); if(f) f.hidden = !(id === "s-welcome" && inFrame && !S.stay); }
   function go(id){
-    S.screen = id; save();
+    S.screen = id; save(); showForward(id);
     SCREENS.forEach(function(s){ $(s).hidden = (s !== id); });
     if(id === "s-welcome") $("desk-note").hidden = isMobile;
     if(id === "s-pick") renderPick();
@@ -311,7 +334,15 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
     $("btn-picker").hidden = !native;
     $("btn-picker-ios").hidden = !(isIOS && !native);
     $("ios-hint").hidden = !(isIOS && !native);
-    $("and-hint").hidden = !(isAndroid && !native);
+    var noBrowser = (isAndroid && !hasPicker && !inFrame) || (isIOS && inApp);
+    $("browser-hint").hidden = !noBrowser;
+    if(noBrowser){
+      var ob = $("open-browser");
+      if(isAndroid){ $("browser-why").textContent = "Chrome can open your contact list; this browser can't."; ob.textContent = "Open in Chrome"; ob.href = "intent://" + SITE.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=" + encodeURIComponent(SITE) + ";end"; }
+      else { $("browser-why").textContent = "Safari can; open the page there."; ob.textContent = "Open in Safari"; ob.href = "x-safari-" + SITE; }
+    }
+    $("and-hint").hidden = !(isAndroid && !native && !noBrowser);
+    $("vcf-hint").hidden = !(isIOS && S.vcf);
     $("btn-paste").hidden = !(isMobile && canPaste);
     var ul = $("people"); ul.innerHTML = "";
     S.people.forEach(function(p, idx){
@@ -364,6 +395,48 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
   ["m-name","m-phone"].forEach(function(id){
     $(id).addEventListener("input", function(e){ if(!e.inputType || e.inputType === "insertReplacementText") maybeAuto(); });
     $(id).addEventListener("change", maybeAuto);
+  });
+  // vCard (.vcf) import: several contacts at once, exported from the Contacts app
+  function parseVcf(text){
+    var lines = String(text || "").replace(/\r\n?/g, "\n").replace(/\n[ \t]/g, "").split("\n"), out = [], cur = null;
+    lines.forEach(function(l){
+      var u = l.toUpperCase();
+      if(u === "BEGIN:VCARD"){ cur = {fn: "", n: "", tels: []}; return; }
+      if(u === "END:VCARD"){ if(cur) out.push(cur); cur = null; return; }
+      if(!cur) return;
+      var i = l.indexOf(":"); if(i < 0) return;
+      var key = l.slice(0, i).toUpperCase(), val = l.slice(i + 1).trim();
+      var base = key.split(";")[0].replace(/^ITEM\d+\./, "");
+      if(base === "FN") cur.fn = val;
+      else if(base === "N"){ var parts = val.split(";"); cur.n = (parts[1] || "").trim() || (parts[0] || "").trim(); }
+      else if(base === "TEL"){ var cell = /CELL|MOBILE|IPHONE/.test(key) || !/WORK|HOME|FAX|PAGER/.test(key); cur.tels.push({v: val, cell: cell}); }
+    });
+    return out.map(function(c){
+      var tels = c.tels.slice().sort(function(a, b){ return (b.cell ? 1 : 0) - (a.cell ? 1 : 0); }).map(function(t){ return t.v; });
+      return { first: firstName(c.n || c.fn), tels: tels };
+    });
+  }
+  $("vcf-open").addEventListener("click", function(){ S.vcf = true; save(); renderPick(); try { $("vcf-hint").scrollIntoView({behavior: "smooth", block: "start"}); } catch(e) {} });
+  $("vcf-btn").addEventListener("click", function(){ $("vcf").click(); });
+  $("vcf").addEventListener("change", function(){
+    var files = Array.prototype.slice.call($("vcf").files || []); if(!files.length) return;
+    var pending = files.length, added = 0, issues = 0, over = 0;
+    files.forEach(function(f){
+      var r = new FileReader();
+      r.onload = function(){
+        parseVcf(r.result).forEach(function(c){
+          if(S.people.length >= MAX){ over++; return; }
+          var e = addPerson(c.first, c.tels); if(e) issues++; else added++;
+        });
+        if(--pending === 0){
+          $("add-err").textContent = over ? "Only the first 10 were added." : (issues ? issues + (issues === 1 ? " contact had" : " contacts had") + " no usable mobile number or was already listed." : "");
+          if(added) toast(added + (added === 1 ? " person" : " people") + " added"); else if(!issues) $("add-err").textContent = "No contacts found in that file.";
+          $("vcf").value = ""; renderPick();
+        }
+      };
+      r.onerror = function(){ if(--pending === 0){ $("add-err").textContent = "Couldn't read that file."; renderPick(); } };
+      r.readAsText(f);
+    });
   });
   $("btn-picker-ios").addEventListener("click", function(){
     if(S.people.length >= MAX){ $("add-err").textContent = "That's 10 — the most for one round."; return; }
@@ -556,6 +629,8 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
   }
   $("more").addEventListener("click", function(){ S = fresh(); wipe(); go("s-pick"); });
 
+  var fs = $("fwd-stay"); if(fs) fs.addEventListener("click", function(){ S.stay = true; save(); showForward(S.screen); });
+  var fw = $("fwd"); if(fw) fw.addEventListener("click", function(){ fw.textContent = "Opening…"; setTimeout(function(){ fw.textContent = "Continue →"; }, 2500); });
   go(S.screen || "s-welcome");
 })();
 </script>

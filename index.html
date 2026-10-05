@@ -139,7 +139,7 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
     <p class="sub">Veterans, service members, military spouses, or anyone thinking about buying.</p>
     <div class="links" style="margin:0 0 6px"><span class="counter" id="count" aria-live="polite">0 of 10 selected</span></div>
     <button class="btn btn-amber" id="btn-picker" type="button" hidden>Choose from my contacts</button>
-    <button class="btn btn-amber" id="btn-picker-ios" type="button" hidden>Choose from my contacts</button>
+    <label class="btn btn-amber" id="btn-picker-ios" for="m-name" hidden style="margin:0">Choose from my contacts</label>
     <div class="hint" id="browser-hint" hidden><b>This browser can't open your Contacts.</b> <span id="browser-why"></span>
       <a class="btn btn-primary" id="open-browser" href="#" style="margin-top:10px">Open in Chrome</a></div>
     <div class="hint" id="and-hint" hidden><b>Add people from your Contacts:</b> open your <b>Contacts</b> app, press and hold the person's mobile number to <b>Copy</b> it, come back here, press and hold the <b>Mobile number</b> box and tap <b>Paste</b>. Type their first name and tap <b>Add person</b>. Repeat for the next person.
@@ -438,11 +438,11 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
       r.readAsText(f);
     });
   });
-  $("btn-picker-ios").addEventListener("click", function(){
-    if(S.people.length >= MAX){ $("add-err").textContent = "That's 10 — the most for one round."; return; }
-    var h = $("ios-hint"); h.classList.add("hot"); setTimeout(function(){ h.classList.remove("hot"); }, 2500);
-    $("m-name").focus();
-    toast("Tap AutoFill Contact above the keyboard", 2600);
+  $("btn-picker-ios").addEventListener("click", function(ev){
+    if(S.people.length >= MAX){ ev.preventDefault(); $("add-err").textContent = "That's 10 — the most for one round."; return; }
+    var h = $("ios-hint"); h.classList.add("hot"); setTimeout(function(){ h.classList.remove("hot"); }, 3000);
+    try { $("m-name").focus(); } catch(e) {}  // the <label> also focuses it natively, which is what opens the keyboard on iPhone
+    toast("Now tap AutoFill Contact above the keyboard, then Other Contact…", 3200);
   });
   $("btn-picker").addEventListener("click", function(){
     if(S.people.length >= MAX){ $("add-err").textContent = "That's 10 — the most for one round."; return; }

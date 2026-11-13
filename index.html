@@ -237,7 +237,7 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
   var SITE = "https://chitown034.github.io/pay-it-forward/";
   // iPhone gateway: an Apple Shortcut that opens the real Contacts picker and hands the people back to this page.
   // SHORTCUT_INSTALL = the Shortcut's iCloud share link (set once it exists); SHORTCUT_NAME must match the Shortcut's name.
-  var SHORTCUT_NAME = "Pay It Forward Contacts", SHORTCUT_INSTALL = "";
+  var SHORTCUT_NAME = "Pay It Forward Contacts", SHORTCUT_INSTALL = "https://www.icloud.com/shortcuts/69690ac6bcf14aa49c5890737bd740ff";
   var SHORTCUT_RUN = "shortcuts://run-shortcut?name=" + encodeURIComponent(SHORTCUT_NAME);
   var isMobile = isIOS || isAndroid;
   var hasPicker = false, inFrame = false, pickerBlocked = false, canPaste = false;
@@ -693,6 +693,8 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
     return true;
   }
   if(!intakeHash()) go(S.screen || "s-welcome");
+  // The Shortcut may hand people back to this same tab (only the #people= part changes, no reload).
+  window.addEventListener("hashchange", intakeHash);
 })();
 </script>
 

@@ -124,7 +124,7 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
   <section id="s-pick" class="card" hidden>
     <div class="eyebrow">Thanks for coming today</div>
     <h1>Pay It Forward</h1>
-    <p class="sub">Know a vet who should be using their VA benefit? Pick them from your contacts and each one gets their own 3-way text with you and Steven.</p>
+    <p class="sub">Know a vet who should be using their VA benefit? Pick up to 20 people from your contacts. Each one gets their own 3-way text with you and Steven Shearrill, (619) 368-7141.</p>
     <div class="deskonly" id="desk-note" hidden style="margin:0 0 12px">This works best on your phone. Scan the QR code, or open this page in Safari or Chrome on your phone.</div>
     <div class="preview">
       <div class="to" id="tone-to">To: Alex, Steven &amp; you</div>
@@ -144,29 +144,18 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
     </div>
     <h2 style="margin-top:18px">Who comes to mind?</h2>
     <p class="sub">Veterans, service members, military spouses, or anyone thinking about buying.</p>
-    <div class="links" style="margin:0 0 6px"><span class="counter" id="count" aria-live="polite">0 of 10 selected</span></div>
+    <div class="links" style="margin:0 0 6px"><span class="counter" id="count" aria-live="polite">0 of 20 selected</span></div>
     <button class="btn btn-amber" id="btn-picker" type="button" hidden>Choose from my contacts</button>
     <a class="btn btn-amber" id="btn-shortcut" href="#" hidden>Choose from my contacts</a>
     <p class="privacy" id="sc-note" hidden style="margin:6px 0 0">Uses the contact picker you added to this iPhone. <button class="link" type="button" id="sc-manual" style="padding:0;font-size:inherit">Pick one at a time instead</button></p>
     <label class="btn btn-amber" id="btn-picker-ios" for="m-name" hidden style="margin:0">Choose from my contacts</label>
+    <p class="privacy" id="picker-note" hidden style="margin:6px 0 0">Your contact list opens. Tick up to 20 people, then tap Done.</p>
     <div class="hint" id="browser-hint" hidden><b>This browser can't open your Contacts.</b> <span id="browser-why"></span>
       <a class="btn btn-primary" id="open-browser" href="#" style="margin-top:10px">Open in Chrome</a></div>
     <div class="hint" id="and-hint" hidden><b>Add people from your Contacts:</b> open your <b>Contacts</b> app, press and hold the person's mobile number to <b>Copy</b> it, come back here, press and hold the <b>Mobile number</b> box and tap <b>Paste</b>. Type their first name and tap <b>Add person</b>. Repeat for the next person.
       <small>Used when the phone's contact picker can't open here (Chrome only allows it on a full-screen page).</small></div>
-    <div class="hint" id="ios-hint" hidden><b>Pick from your Contacts on iPhone:</b>
-      <ol style="margin:6px 0 0;padding-left:20px"><li>Tap the <b>Name</b> box so the keyboard opens.</li><li>Just above the keyboard, tap <b>AutoFill Contact</b> (the contact-card icon), then <b>Other Contact…</b>. Your Contacts list opens.</li><li>Pick the person. Their name and mobile number fill in and they're added. Repeat for the next person.</li></ol>
-      <small>No AutoFill button? Turn on Settings › Apps › Safari › AutoFill › <b>Use Contact Info</b>, or <button class="link" type="button" id="vcf-open" style="padding:0;font-size:inherit">import several people at once from a contacts file</button>.</small></div>
-    <div class="hint" id="quick-hint" hidden><b>Or skip this step:</b> start the text in Messages and add your friend there. Messages opens your Contacts as soon as you type their name.
-      <a class="btn btn-primary" id="btn-quick" href="#" target="_blank" rel="noopener" style="margin-top:10px">Open Messages with Steven added</a>
-      <small>In Messages, tap the <b>To:</b> line, pick your friend, and hit send. One friend per text keeps it personal.</small></div>
-    <details class="manual" id="sc-details" hidden><summary>Picking several people at once? (optional, iPhone)</summary>
-      <p class="sub" style="margin:8px 0 0">Add a free Apple Shortcut once and this page can open your full Contacts list with multi-select. Nothing else to install.</p>
-      <a class="btn btn-ghost" id="btn-shortcut-install" href="#" style="margin-top:10px">1. Add the contact picker</a>
-      <a class="btn btn-ghost" id="btn-shortcut-run" href="#" style="margin-top:8px">2. Choose several contacts</a></details>
-    <div class="hint" id="vcf-hint" hidden><b>Add several people at once (iPhone):</b>
-      <ol style="margin:6px 0 0;padding-left:20px"><li>Open the <b>Contacts</b> app, press and hold a name, tap <b>Select Contacts</b>, and tick up to 10 people.</li><li>Tap <b>Share</b> → <b>Save to Files</b>.</li><li>Come back here and tap <b>Choose contacts file</b>, then pick that file.</li></ol>
-      <button class="btn btn-ghost" id="vcf-btn" type="button" style="margin-top:10px">Choose contacts file</button>
-      <input type="file" id="vcf" accept=".vcf,text/vcard,text/x-vcard,text/directory" multiple hidden></div>
+    <div class="hint" id="ios-hint" hidden><b>On iPhone:</b> when the keyboard opens, tap <b>AutoFill Contact</b> just above it, then <b>Other Contact…</b>. Your Contacts list opens. Pick your friend and they're added to your list. Repeat for up to 20 people.
+      <small>No AutoFill button? Turn on Settings › Apps › Safari › AutoFill › <b>Use Contact Info</b>.</small></div>
     <form id="manual" autocomplete="on" novalidate>
       <label for="m-name">Name</label>
       <div class="row" style="gap:8px"><input type="text" id="m-name" name="given-name" autocomplete="given-name" autocapitalize="words" enterkeyhint="next" placeholder="First" style="flex:1 1 120px"><input type="text" id="m-last" name="family-name" autocomplete="family-name" autocapitalize="words" enterkeyhint="next" placeholder="Last" style="flex:1 1 120px"></div>
@@ -177,6 +166,18 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
     </form>
     <ul class="people" id="people" aria-label="People you picked"></ul>
     <div style="margin-top:14px"><button class="btn btn-primary" id="to-send" type="button" disabled>Send</button></div>
+    <details class="manual" id="more-ways" hidden><summary>Other ways to add people</summary>
+      <div class="hint" id="quick-hint" hidden><b>Add your friend inside Messages:</b> the text opens with Steven already added. Tap the <b>+</b> on the <b>To:</b> line, pick your friend from your Contacts, and hit send.
+        <a class="btn btn-primary" id="btn-quick" href="#" target="_blank" rel="noopener" style="margin-top:10px">Open Messages with Steven added</a>
+        <small>One friend per text keeps it personal. Come back and tap again for the next friend.</small></div>
+      <div class="hint" id="sc-details" hidden><b>Tick several people at once (optional):</b> add a free Apple Shortcut one time and this page can open your full Contacts list with checkboxes.
+        <a class="btn btn-ghost" id="btn-shortcut-install" href="#" style="margin-top:10px">1. Add the contact picker</a>
+        <a class="btn btn-ghost" id="btn-shortcut-run" href="#" style="margin-top:8px">2. Choose several contacts</a></div>
+      <div class="hint" id="vcf-hint" hidden><b>Bring in a contacts file:</b>
+        <ol style="margin:6px 0 0;padding-left:20px"><li>Open the <b>Contacts</b> app, press and hold a name, tap <b>Select Contacts</b>, and tick up to 20 people.</li><li>Tap <b>Share</b>, then <b>Save to Files</b>.</li><li>Come back here and tap <b>Choose contacts file</b>, then pick that file.</li></ol>
+        <button class="btn btn-ghost" id="vcf-btn" type="button" style="margin-top:10px">Choose contacts file</button>
+        <input type="file" id="vcf" accept=".vcf,text/vcard,text/x-vcard,text/directory" multiple hidden></div>
+    </details>
     <p class="privacy">Your contacts stay on your phone. Nothing is uploaded.</p>
   </section>
 
@@ -212,7 +213,7 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
 <script>
 (function(){
   "use strict";
-  var STEVEN = "+16193687141", STEVEN_PRETTY = "(619) 368-7141", MAX = 10, SOFT = 300, TOKEN = "[First Name]";
+  var STEVEN = "+16193687141", STEVEN_PRETTY = "(619) 368-7141", MAX = 20, SOFT = 300, TOKEN = "[First Name]";
   var TONES = {
     default: "Hey [First Name], hope you're doing well. I went to a VA home buying seminar today and thought of you right away. I'm adding Steven here. He's a Navy vet who helps veterans use their VA home loan benefit, and he'll walk you through yours for free.\n\nSteven, this is [First Name]. Take good care of them.",
     short: "Hey [First Name], I just left a VA home buying seminar and thought of you. I'm adding Steven here. He's a Navy vet who does VA home loans, and he'll go over your benefits with you for free.\n\nSteven, meet [First Name].",
@@ -356,6 +357,8 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
     $("sc-details").hidden = !(scOk && !gateway);
     $("btn-shortcut").href = $("btn-shortcut-run").href = SHORTCUT_RUN; $("btn-shortcut-install").href = SHORTCUT_INSTALL;
     $("quick-hint").hidden = !(isMobile && !native);
+    $("more-ways").hidden = !(isMobile && !native);
+    $("picker-note").hidden = !native;
     $("btn-quick").href = quickLink();
     $("btn-picker-ios").hidden = !(isIOS && !native && !gateway);
     $("ios-hint").hidden = !(isIOS && !native && !gateway);
@@ -367,7 +370,7 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
       else { $("browser-why").textContent = "Safari can; open the page there."; ob.textContent = "Open in Safari"; ob.href = "x-safari-" + SITE; }
     }
     $("and-hint").hidden = !(isAndroid && !native && !noBrowser);
-    $("vcf-hint").hidden = !(isIOS && S.vcf);
+    $("vcf-hint").hidden = !(isIOS && !native);
     $("btn-paste").hidden = !(isMobile && canPaste);
     var ul = $("people"); ul.innerHTML = "";
     S.people.forEach(function(p, idx){
@@ -391,7 +394,7 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
     $("btn-add").disabled = $("m-name").disabled = $("m-phone").disabled = n >= MAX;
   }
   function addPerson(first, phones, last){
-    if(S.people.length >= MAX) return "That's 10, the most for one round.";
+    if(S.people.length >= MAX) return "That's " + MAX + ", the most for one round.";
     var opts = [], isSteven = false;
     phones.forEach(function(p){ var v = normalize(p); if(v === STEVEN){ isSteven = true; return; } if(v && opts.indexOf(v) < 0) opts.push(v); });
     if(!opts.length) return isSteven ? "That's Steven's number. He's already in every thread." : "That doesn't look like a mobile number. Try 10 digits, like (702) 555-0123.";
@@ -443,7 +446,6 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
       return { first: firstName(c.n || c.fn), last: c.ln || (c.n ? "" : lastName(c.fn)), tels: tels };
     });
   }
-  $("vcf-open").addEventListener("click", function(){ S.vcf = true; save(); renderPick(); try { $("vcf-hint").scrollIntoView({behavior: "smooth", block: "start"}); } catch(e) {} });
   $("vcf-btn").addEventListener("click", function(){ $("vcf").click(); });
   $("vcf").addEventListener("change", function(){
     var files = Array.prototype.slice.call($("vcf").files || []); if(!files.length) return;
@@ -456,7 +458,7 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
           var e = addPerson(c.first, c.tels, c.last); if(e) issues++; else added++;
         });
         if(--pending === 0){
-          $("add-err").textContent = over ? "Only the first 10 were added." : (issues ? issues + (issues === 1 ? " contact had" : " contacts had") + " no usable mobile number or was already listed." : "");
+          $("add-err").textContent = over ? "Only the first " + MAX + " were added." : (issues ? issues + (issues === 1 ? " contact had" : " contacts had") + " no usable mobile number or was already listed." : "");
           if(added) toast(added + (added === 1 ? " person" : " people") + " added"); else if(!issues) $("add-err").textContent = "No contacts found in that file.";
           $("vcf").value = ""; renderPick();
         }
@@ -466,13 +468,13 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
     });
   });
   $("btn-picker-ios").addEventListener("click", function(ev){
-    if(S.people.length >= MAX){ ev.preventDefault(); $("add-err").textContent = "That's 10, the most for one round."; return; }
+    if(S.people.length >= MAX){ ev.preventDefault(); $("add-err").textContent = "That's " + MAX + ", the most for one round."; return; }
     var h = $("ios-hint"); h.classList.add("hot"); setTimeout(function(){ h.classList.remove("hot"); }, 3000);
     try { $("m-name").focus(); } catch(e) {}  // the <label> also focuses it natively, which is what opens the keyboard on iPhone
     toast("Now tap AutoFill Contact above the keyboard, then Other Contact…", 3200);
   });
   $("btn-picker").addEventListener("click", function(){
-    if(S.people.length >= MAX){ $("add-err").textContent = "That's 10, the most for one round."; return; }
+    if(S.people.length >= MAX){ $("add-err").textContent = "That's " + MAX + ", the most for one round."; return; }
     navigator.contacts.select(["name","tel"], {multiple: true}).then(function(list){
       pickerBlocked = false;
       var added = 0, issues = 0, over = 0;
@@ -480,7 +482,7 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
         if(S.people.length >= MAX){ over++; return; }
         var nmv = (c.name || [])[0]; var e = addPerson(firstName(nmv), c.tel || [], lastName(nmv)); if(e) issues++; else added++;
       });
-      $("add-err").textContent = over ? "Only the first 10 were added." : (issues ? issues + (issues === 1 ? " contact had" : " contacts had") + " no usable mobile number or was already listed." : "");
+      $("add-err").textContent = over ? "Only the first " + MAX + " were added." : (issues ? issues + (issues === 1 ? " contact had" : " contacts had") + " no usable mobile number or was already listed." : "");
       if(added) toast(added + (added === 1 ? " person" : " people") + " added");
       renderPick();
     }).catch(function(err){
@@ -517,7 +519,7 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
         if(!it.first){ issues++; return; }
         var e = addPerson(it.first, [it.phone], it.last); if(e) issues++; else added++;
       });
-      $("add-err").textContent = over ? "Only the first 10 were added." : (issues ? issues + (issues === 1 ? " line was" : " lines were") + " skipped (no name or no mobile number)." : "");
+      $("add-err").textContent = over ? "Only the first " + MAX + " were added." : (issues ? issues + (issues === 1 ? " line was" : " lines were") + " skipped (no name or no mobile number)." : "");
       if(added) toast(added + (added === 1 ? " person" : " people") + " added");
       renderPick();
     }).catch(function(){ $("add-err").textContent = "Paste wasn't allowed. Press and hold the number box and choose Paste."; $("m-phone").focus(); });
@@ -710,7 +712,7 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
     });
     if(added || issues || over) rememberShortcut();
     S.screen = "s-pick"; save(); go("s-pick");
-    $("add-err").textContent = over ? "Only the first 10 were added." : (issues ? issues + (issues === 1 ? " contact had" : " contacts had") + " no usable mobile number or was already listed." : "");
+    $("add-err").textContent = over ? "Only the first " + MAX + " were added." : (issues ? issues + (issues === 1 ? " contact had" : " contacts had") + " no usable mobile number or was already listed." : "");
     if(added) toast(added + (added === 1 ? " person" : " people") + " added from your Contacts", 2600);
     return true;
   }

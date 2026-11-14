@@ -84,7 +84,7 @@ select{font-family:inherit;font-size:14px;max-width:100%;background:var(--card);
 .prow{border:1.5px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden}
 .prow.cur{border-color:#F2A31B;box-shadow:0 0 0 2px #F2A31B inset}
 .prow.sent{background:var(--ok-bg);border-color:var(--ok)}
-.prow .head{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;width:100%;background:none;border:0;font-family:inherit;color:var(--ink);text-align:left;font-size:17px}
+.prow .head{display:flex;align-items:center;gap:12px;padding:10px 0 10px 12px;cursor:pointer;width:100%;background:none;border:0;font-family:inherit;color:var(--ink);text-align:left;font-size:17px}
 .prow .head .st{margin-left:auto;font-size:13px;color:var(--muted);font-weight:600;white-space:nowrap}
 .prow.sent .head .st{color:var(--ok)}
 .prow .body{padding:0 14px 14px}
@@ -101,6 +101,17 @@ select{font-family:inherit;font-size:14px;max-width:100%;background:var(--card);
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 18px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw;text-align:center}
 .toast.on{opacity:1}
 footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;font-size:12px;color:var(--muted);text-align:center;line-height:1.5}
+.av{width:40px;height:40px;border-radius:50%;background:linear-gradient(#A5ABB8,#858B98);color:#fff;display:grid;place-items:center;font-weight:600;font-size:15px;flex:none;letter-spacing:.02em}
+.sticky{position:sticky;bottom:0;background:var(--card);padding:10px 0 6px;margin-top:10px;z-index:2;box-shadow:0 -1px 0 var(--line)}
+.status{background:var(--chip);border-radius:14px;padding:14px;margin:6px 0 12px}
+.status .h{display:flex;gap:10px;align-items:center;font-weight:700;font-size:18px;line-height:1.25}
+.status .ic{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:14px;flex:none;background:#0A84FF}
+.status.ok .ic{background:var(--ok)}.status.warn .ic{background:#F2A31B;color:#1A1405}
+.status p{margin:6px 0 0;color:var(--muted);font-size:15px}
+.status .cnt{font-size:13px;color:var(--muted)}
+.prow .headrow{display:flex;align-items:center}
+.prow .head{flex:1;min-width:0}
+.prow .act{padding:12px 14px;font-weight:700;color:#0A84FF;text-decoration:none;font-size:16px;white-space:nowrap}
 [hidden]{display:none!important}
 @media (prefers-reduced-motion:reduce){.toast{transition:none}}
 </style>
@@ -165,7 +176,7 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
       <button class="btn btn-ghost" id="btn-add" type="submit">Add person</button>
     </form>
     <ul class="people" id="people" aria-label="People you picked"></ul>
-    <div style="margin-top:14px"><button class="btn btn-primary" id="to-send" type="button" disabled>Send</button></div>
+    <div class="sticky"><button class="btn btn-primary" id="to-send" type="button" disabled>Send</button></div>
     <details class="manual" id="more-ways" hidden><summary>Other ways to add people</summary>
       <div class="hint" id="quick-hint" hidden><b>Add your friend inside Messages:</b> the text opens with Steven already added. Tap the <b>+</b> on the <b>To:</b> line, pick your friend from your Contacts, and hit send.
         <a class="btn btn-primary" id="btn-quick" href="#" target="_blank" rel="noopener" style="margin-top:10px">Open Messages with Steven added</a>
@@ -181,15 +192,18 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
     <p class="privacy">Your contacts stay on your phone. Nothing is uploaded.</p>
   </section>
 
-  <!-- Review and send to everyone picked -->
+  <!-- Sending: one 3-way text per friend, like the app -->
   <section id="s-send" class="card" hidden>
-    <div class="eyebrow">Pay it forward</div>
-    <h2 id="send-title">Read, then send</h2>
-    <p class="sub" id="send-sub">Each tap opens Messages with the group text ready for you, Steven and that person. Hit send there, come back here, and the next one is waiting.</p>
-    <div class="note" id="sent-note" hidden></div>
-    <div class="progress" id="progress" aria-hidden="true"></div>
-    <ul class="plist" id="plist" aria-label="People to introduce"></ul>
-    <div style="margin-top:14px"><button class="btn btn-primary" id="btn-finish" type="button" hidden>Finish</button></div>
+    <div class="eyebrow">Pay It Forward</div>
+    <h2>Sending</h2>
+    <div class="status" id="status" aria-live="polite"><div class="h"><span class="ic" id="st-ic" aria-hidden="true">➤</span><span id="send-title">Ready to send</span></div>
+      <p id="send-sub"></p>
+      <div class="progress" id="progress" aria-hidden="true" style="margin:12px 0 6px"></div>
+      <div class="cnt" id="st-count"></div></div>
+    <a class="btn btn-amber" id="btn-next" href="#">Send</a>
+    <button class="btn btn-primary" id="btn-finish" type="button" hidden>Done</button>
+    <ul class="plist" id="plist" aria-label="People to introduce" style="margin-top:14px"></ul>
+    <p class="privacy" style="text-align:left">Tap a name to change what their text says. Changed your mind about someone? Tap Send or Resend next to their name.</p>
     <div class="links"><button class="link" type="button" data-go="s-pick">Back</button><button class="link" type="button" id="skip-rest">Skip the rest</button></div>
   </section>
 
@@ -277,6 +291,7 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
 
   function firstName(full){ var n = String(full||"").trim().split(/\s+/)[0] || ""; return n.slice(0,40); }
   function lastName(full){ var p = String(full||"").trim().split(/\s+/); return p.length > 1 ? p.slice(1).join(" ").slice(0,40) : ""; }
+  function initials(p){ return ((p.first || "").charAt(0) + (p.last || "").charAt(0)).toUpperCase().replace(/[^A-Z\u00C0-\u024F]/g, ""); }
   function fullName(p){ return (p.first + (p.last ? " " + p.last : "")).trim(); }
   function normalize(raw){
     var s = String(raw||"").trim(), plus = s.charAt(0) === "+", d = s.replace(/\D/g,"");
@@ -375,6 +390,7 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
     var ul = $("people"); ul.innerHTML = "";
     S.people.forEach(function(p, idx){
       var li = document.createElement("li"), g = document.createElement("div"); g.className = "grow";
+      var av = document.createElement("span"); av.className = "av"; av.setAttribute("aria-hidden", "true"); av.textContent = initials(p) || "•"; li.appendChild(av);
       var nm = document.createElement("div"); nm.className = "nm"; nm.textContent = fullName(p) || "(no name)"; g.appendChild(nm);
       if(p.options && p.options.length > 1){
         var sel = document.createElement("select"); sel.setAttribute("aria-label", "Number for " + (p.first || "contact"));
@@ -550,44 +566,70 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
   });
   $("tpl-reset").addEventListener("click", function(){ S.custom = null; S.people.forEach(function(p){ if(p.status === "pending") p.draft = null; }); save(); renderTone(); });
   function startSend(){ S.i = nextPending(-1); S.last = -1; save(); go(S.i < 0 ? "s-done" : "s-send"); }
-  $("to-send").addEventListener("click", function(){ if(S.people.length) startSend(); });
+  // Like the app: tapping Send opens the first friend's text right away.
+  $("to-send").addEventListener("click", function(){
+    if(!S.people.length) return;
+    startSend();
+    if(isMobile && S.i >= 0) openText(S.i);
+  });
 
-  // ---------- step 3: review and send all ----------
-  var open = -1; // which row is expanded
+  // ---------- sending: one 3-way text per friend ----------
+  var open = -1, fallbackOpen = -1;   // expanded row; row whose copy-and-paste fallback is shown
+  var sendPending = -1, wentHidden = false;
+  function count(st){ return S.people.filter(function(p){ return p.status === st; }).length; }
   function renderSend(){
     if(S.i < 0 || !S.people[S.i] || S.people[S.i].status !== "pending") S.i = nextPending(-1);
-    open = S.i;
-    var sent = S.people.filter(function(p){ return p.status === "sent"; }).length;
-    var left = S.people.filter(function(p){ return p.status === "pending"; }).length;
-    $("send-title").textContent = left ? "Read, then send" : "All done here";
-    var note = $("sent-note");
-    if(S.last >= 0 && S.people[S.last] && S.people[S.last].status === "sent"){
-      note.hidden = false; note.innerHTML = "";
-      var b = document.createElement("b"); b.textContent = "Sent to " + call(S.people[S.last]) + "."; note.appendChild(b);
-      note.appendChild(document.createTextNode(S.i >= 0 ? " Next up: " + call(S.people[S.i]) + " →" : " That was the last one."));
-    } else note.hidden = true;
+    var total = S.people.length, sent = count("sent"), left = count("pending"), cur = S.i >= 0 ? S.people[S.i] : null;
+    var cls = "", ic = "➤", title, body;
+    if(!left){
+      cls = "ok"; ic = "✓";
+      title = sent === total ? "All " + total + " sent. Thank you." : (sent ? sent + " sent. Thank you." : "Nothing sent yet");
+      body = "Steven will reply in each thread and take it from there.";
+    } else if(fallbackOpen >= 0 && S.people[fallbackOpen] && S.people[fallbackOpen].status === "pending"){
+      cls = "warn"; ic = "!";
+      title = "Messages didn't open";
+      body = "Use the copy buttons under " + call(S.people[fallbackOpen]) + " to send it by hand, then tap I sent it.";
+    } else if(S.last >= 0 && S.people[S.last] && S.people[S.last].status === "sent"){
+      cls = "ok"; ic = "✓";
+      title = "Sent to " + call(S.people[S.last]) + ". Next up: " + call(cur);
+      body = "Tap the button to open " + call(cur) + "'s text.";
+    } else {
+      title = sent ? "Next up: " + call(cur) : "Ready to send " + left;
+      body = "Each friend gets their own 3-way text with you and Steven. Hit Send in Messages, then come back here for the next one.";
+    }
+    $("status").className = "status " + cls; $("st-ic").textContent = ic;
+    $("send-title").textContent = title; $("send-sub").textContent = body;
     var pr = $("progress"); pr.innerHTML = "";
     S.people.forEach(function(p, k){ var i = document.createElement("i"); i.className = p.status === "sent" ? "s" : p.status === "skipped" ? "k" : (k === S.i ? "c" : ""); pr.appendChild(i); });
+    $("st-count").textContent = sent + " of " + total + " sent";
+    var nb = $("btn-next"); nb.hidden = !cur;
+    if(cur){ nb.textContent = "Send to " + call(cur); nb.href = smsLink(cur.phone, textFor(cur)); }
     $("btn-finish").hidden = left > 0; $("skip-rest").hidden = left === 0;
-    $("btn-finish").textContent = sent ? "Finish (" + sent + " introduced)" : "Finish";
     drawList();
   }
+  $("btn-next").addEventListener("click", function(ev){ onSendClick(ev, S.i); });
   function drawList(){
     var ul = $("plist"); ul.innerHTML = "";
     S.people.forEach(function(p, k){
-      var li = document.createElement("li"); li.className = "prow" + (p.status === "sent" ? " sent" : "") + (k === S.i && p.status === "pending" ? " cur" : "");
+      var li = document.createElement("li"); li.id = "row-" + k;
+      li.className = "prow" + (p.status === "sent" ? " sent" : "") + (k === S.i && p.status === "pending" ? " cur" : "");
+      var hr = document.createElement("div"); hr.className = "headrow";
       var head = document.createElement("button"); head.type = "button"; head.className = "head"; head.setAttribute("aria-expanded", open === k ? "true" : "false");
-      var nm = document.createElement("b"); nm.textContent = (k + 1) + ". " + fullName(p); head.appendChild(nm);
-      var st = document.createElement("span"); st.className = "st";
-      st.textContent = p.status === "sent" ? "Sent ✓" : p.status === "skipped" ? "Skipped" : (k === S.i ? "Up next" : "Ready");
-      head.appendChild(st);
+      var av = document.createElement("span"); av.className = "av"; av.setAttribute("aria-hidden", "true"); av.textContent = initials(p) || "•"; head.appendChild(av);
+      var g = document.createElement("span"); g.className = "grow";
+      var nm = document.createElement("b"); nm.style.display = "block"; nm.textContent = fullName(p) || pretty(p.phone); g.appendChild(nm);
+      var ph = document.createElement("span"); ph.className = "ph";
+      ph.textContent = (p.status === "sent" ? "Sent ✓ · " : p.status === "skipped" ? "Skipped · " : (k === S.i ? "Up next · " : "")) + pretty(p.phone);
+      g.appendChild(ph); head.appendChild(g);
       head.addEventListener("click", function(){ open = (open === k) ? -1 : k; drawList(); });
-      li.appendChild(head);
-      if(open === k){
+      hr.appendChild(head);
+      var act = document.createElement("a"); act.className = "act"; act.href = smsLink(p.phone, textFor(p));
+      act.textContent = p.status === "sent" ? "Resend" : "Send";
+      act.setAttribute("aria-label", act.textContent + " to " + (fullName(p) || pretty(p.phone)));
+      act.addEventListener("click", function(ev){ if(p.status !== "pending") p.status = "pending"; S.last = -1; onSendClick(ev, k); });
+      hr.appendChild(act); li.appendChild(hr);
+      if(open === k || fallbackOpen === k){
         var body = document.createElement("div"); body.className = "body";
-        var to = document.createElement("div");
-        [ "To: " + fullName(p) + " " + pretty(p.phone), "Steven", "+ you" ].forEach(function(t){ var s = document.createElement("span"); s.className = "pill"; s.textContent = t; to.appendChild(s); });
-        body.appendChild(to);
         if(p.status === "pending"){
           var l1 = document.createElement("label"); l1.textContent = "What do you call them?"; l1.setAttribute("for", "nick-" + k); body.appendChild(l1);
           var nick = document.createElement("input"); nick.type = "text"; nick.id = "nick-" + k; nick.value = call(p); nick.autocomplete = "off"; body.appendChild(nick);
@@ -596,7 +638,14 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
           var meta = document.createElement("div"); meta.className = "meta";
           var len = document.createElement("span"); var reset = document.createElement("button"); reset.type = "button"; reset.className = "link"; reset.style.padding = "0"; reset.textContent = "Reset";
           meta.appendChild(len); meta.appendChild(reset); body.appendChild(meta);
-          function upd(){ var n = ta.value.length; len.textContent = n + " / " + SOFT + (n > SOFT ? " · shorter is safer on older phones" : ""); len.className = n > SOFT ? "over" : ""; a.href = smsLink(p.phone, ta.value); }
+          var row = document.createElement("div"); row.className = "row"; row.style.marginTop = "12px";
+          var a = document.createElement("a"); a.className = "btn btn-amber"; a.textContent = "Send to " + p.first;
+          a.addEventListener("click", function(ev){ onSendClick(ev, k); });
+          row.appendChild(a);
+          var skip = document.createElement("button"); skip.type = "button"; skip.className = "btn btn-ghost"; skip.style.flex = "0 1 120px"; skip.textContent = "Skip";
+          skip.addEventListener("click", function(){ p.status = "skipped"; S.last = -1; open = -1; if(fallbackOpen === k) fallbackOpen = -1; S.i = nextPending(k) >= 0 ? nextPending(k) : nextPending(-1); save(); renderSend(); });
+          row.appendChild(skip); body.appendChild(row);
+          var upd = function(){ var n = ta.value.length; len.textContent = n + " / " + SOFT + (n > SOFT ? " · shorter is safer on older phones" : ""); len.className = n > SOFT ? "over" : ""; a.href = act.href = smsLink(p.phone, ta.value); };
           ta.addEventListener("input", function(){ p.draft = ta.value; save(); upd(); });
           nick.addEventListener("input", function(){
             var old = call(p), nv = nick.value.trim().slice(0,40);
@@ -605,31 +654,20 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
             p.draft = cur; ta.value = cur; save(); upd();
           });
           reset.addEventListener("click", function(){ p.draft = null; p.nick = null; nick.value = p.first; ta.value = textFor(p); save(); upd(); });
-          var row = document.createElement("div"); row.className = "row"; row.style.marginTop = "12px";
-          var a = document.createElement("a"); a.className = "btn btn-amber"; a.target = "_blank"; a.rel = "noopener"; a.textContent = "Send to " + p.first; a.href = smsLink(p.phone, ta.value);
-          a.addEventListener("click", function(ev){ onSendClick(ev, k, a, ta, fb); });
-          row.appendChild(a);
-          var skip = document.createElement("button"); skip.type = "button"; skip.className = "btn btn-ghost"; skip.style.flex = "0 1 120px"; skip.textContent = "Skip";
-          skip.addEventListener("click", function(){ p.status = "skipped"; S.last = -1; if(S.i === k) S.i = nextPending(k) >= 0 ? nextPending(k) : nextPending(-1); save(); renderSend(); });
-          row.appendChild(skip); body.appendChild(row);
-          var fb = document.createElement("details"); fb.className = "fallback";
+          var fb = document.createElement("details"); fb.className = "fallback"; fb.open = fallbackOpen === k;
           fb.innerHTML = '<summary>Messages didn\'t open? Send it by hand</summary><p style="margin:8px 0 0">Start a new group text with these two numbers, then paste the message.</p>';
           [["Steven", STEVEN_PRETTY, "steven"], [fullName(p), pretty(p.phone), "friend"], ["Their message", "", "msg"]].forEach(function(r){
             var d = document.createElement("div"); d.className = "numrow";
-            var s = document.createElement("span"); s.textContent = r[0] + " "; if(r[1]){ var bb = document.createElement("b"); bb.textContent = r[1]; s.appendChild(bb); }
+            var sp = document.createElement("span"); sp.textContent = r[0] + " "; if(r[1]){ var bb = document.createElement("b"); bb.textContent = r[1]; sp.appendChild(bb); }
             var c = document.createElement("button"); c.type = "button"; c.className = "copy"; c.textContent = "Copy"; c.setAttribute("data-copy", r[2]); c.setAttribute("data-idx", String(k));
-            d.appendChild(s); d.appendChild(c); fb.appendChild(d);
+            d.appendChild(sp); d.appendChild(c); fb.appendChild(d);
           });
           var ms = document.createElement("button"); ms.type = "button"; ms.className = "btn btn-primary"; ms.style.marginTop = "10px"; ms.textContent = "I sent it";
-          ms.addEventListener("click", function(){ markSent(k); }); fb.appendChild(ms);
+          ms.addEventListener("click", function(){ fallbackOpen = -1; open = -1; markSent(k); }); fb.appendChild(ms);
           body.appendChild(fb);
           upd();
         } else {
           var txt = document.createElement("div"); txt.className = "sample"; txt.style.marginTop = "4px"; txt.textContent = textFor(p); body.appendChild(txt);
-          var links = document.createElement("div"); links.className = "links";
-          var retry = document.createElement("button"); retry.type = "button"; retry.className = "link"; retry.textContent = p.status === "sent" ? "Didn't send? Retry" : "Put back in the list";
-          retry.addEventListener("click", function(){ p.status = "pending"; S.last = -1; S.i = k; save(); renderSend(); });
-          links.appendChild(retry); body.appendChild(links);
         }
         li.appendChild(body);
       }
@@ -641,36 +679,39 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
     p.status = "sent"; S.last = k; S.i = nextPending(k) >= 0 ? nextPending(k) : nextPending(-1); save();
     if(S.i >= 0) toast("Sent to " + call(p) + ". Next up: " + call(S.people[S.i]), 2200); else toast("Sent to " + call(p) + ". That was the last one.", 2200);
     renderSend();
+    try { window.scrollTo(0, 0); } catch(e) {}
   }
-  // Opening Messages: the page can't see whether they hit send, so it watches the screen.
-  // If the page goes to the background, Messages took over -> count it as sent when they come back.
-  // If the page never leaves the screen, try once more, then show the copy-and-paste fallback.
-  var sendPending = -1, wentHidden = false;
+  // Opening Messages: the page can't see whether they hit Send, so it watches the screen.
+  // If the page goes to the background, Messages took over: count it as sent when they come back.
+  // If the page never leaves the screen, show the copy-and-paste fallback for that person.
   function onHidden(){ if(sendPending >= 0) wentHidden = true; }
   document.addEventListener("pagehide", onHidden);
   document.addEventListener("visibilitychange", function(){
     if(document.visibilityState === "hidden"){ onHidden(); return; }
-    if(sendPending >= 0 && wentHidden){ var k = sendPending; sendPending = -1; wentHidden = false; markSent(k); return; }
+    if(sendPending >= 0 && wentHidden){ var k = sendPending; sendPending = -1; wentHidden = false; fallbackOpen = -1; markSent(k); return; }
     if(S.screen){ SCREENS.forEach(function(s){ $(s).hidden = (s !== S.screen); }); }
   });
-  function onSendClick(ev, k, a, ta, fb){
-    var p = S.people[k]; if(!p){ ev.preventDefault(); return; }
-    if(!isMobile){ ev.preventDefault(); copy(ta.value, "Message"); fb.open = true; toast("On a phone this opens Messages. Message copied."); return; }
-    a.href = smsLink(p.phone, ta.value); var href = a.href;
-    sendPending = k; wentHidden = false;
+  function openText(k){
+    var p = S.people[k]; if(!p) return;
+    S.i = k; save();
+    sendPending = k; wentHidden = false; fallbackOpen = -1;
+    var url = smsLink(p.phone, textFor(p));
+    try { if(typeof window.__pifLaunch === "function") window.__pifLaunch(url); else window.location.href = url; } catch(e) {}  // hook used by automated tests
     setTimeout(function(){
-      if(!(sendPending === k && !wentHidden && document.visibilityState === "visible")) return;
-      try { window.location.href = href; } catch(e) {}
-      setTimeout(function(){
-        if(sendPending === k && !wentHidden && document.visibilityState === "visible"){
-          sendPending = -1; fb.open = true;
-          toast("Messages didn't open here. Use the copy buttons");
-          try { fb.scrollIntoView({behavior: "smooth", block: "start"}); } catch(e) {}
-        }
-      }, 1500);
-    }, 1800);
+      if(sendPending === k && !wentHidden && document.visibilityState === "visible"){
+        sendPending = -1; fallbackOpen = k; open = k; renderSend();
+        toast("Messages didn't open here. Use the copy buttons", 2600);
+        try { $("row-" + k).scrollIntoView({behavior: "smooth", block: "start"}); } catch(e) {}
+      }
+    }, 2500);
   }
-  $("skip-rest").addEventListener("click", function(){ S.people.forEach(function(p){ if(p.status === "pending") p.status = "skipped"; }); S.i = -1; S.last = -1; save(); go("s-done"); });
+  function onSendClick(ev, k){
+    ev.preventDefault();
+    var p = S.people[k]; if(!p) return;
+    if(!isMobile){ copy(textFor(p), "Message"); fallbackOpen = k; open = k; renderSend(); toast("On a phone this opens Messages. Message copied."); return; }
+    openText(k);
+  }
+  $("skip-rest").addEventListener("click", function(){ fallbackOpen = -1; open = -1; S.people.forEach(function(p){ if(p.status === "pending") p.status = "skipped"; }); S.i = -1; S.last = -1; save(); go("s-done"); });
   $("btn-finish").addEventListener("click", function(){ go("s-done"); });
 
   // ---------- done ----------

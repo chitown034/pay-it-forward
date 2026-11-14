@@ -112,6 +112,8 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
 .prow .headrow{display:flex;align-items:center}
 .prow .head{flex:1;min-width:0}
 .prow .act{padding:12px 14px;font-weight:700;color:#0A84FF;text-decoration:none;font-size:16px;white-space:nowrap}
+h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
+.method{margin-bottom:4px}
 [hidden]{display:none!important}
 @media (prefers-reduced-motion:reduce){.toast{transition:none}}
 </style>
@@ -156,17 +158,25 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
     <h2 style="margin-top:18px">Who comes to mind?</h2>
     <p class="sub">Veterans, service members, military spouses, or anyone thinking about buying.</p>
     <div class="links" style="margin:0 0 6px"><span class="counter" id="count" aria-live="polite">0 of 20 selected</span></div>
-    <button class="btn btn-amber" id="btn-picker" type="button" hidden>Choose from my contacts</button>
-    <a class="btn btn-amber" id="btn-shortcut" href="#" hidden>Choose from my contacts</a>
-    <p class="privacy" id="sc-note" hidden style="margin:6px 0 0">Uses the contact picker you added to this iPhone. <button class="link" type="button" id="sc-manual" style="padding:0;font-size:inherit">Pick one at a time instead</button></p>
-    <label class="btn btn-amber" id="btn-picker-ios" for="m-name" hidden style="margin:0">Choose from my contacts</label>
-    <p class="privacy" id="picker-note" hidden style="margin:6px 0 0">Your contact list opens. Tick up to 20 people, then tap Done.</p>
-    <div class="hint" id="browser-hint" hidden><b>This browser can't open your Contacts.</b> <span id="browser-why"></span>
-      <a class="btn btn-primary" id="open-browser" href="#" style="margin-top:10px">Open in Chrome</a></div>
-    <div class="hint" id="and-hint" hidden><b>Add people from your Contacts:</b> open your <b>Contacts</b> app, press and hold the person's mobile number to <b>Copy</b> it, come back here, press and hold the <b>Mobile number</b> box and tap <b>Paste</b>. Type their first name and tap <b>Add person</b>. Repeat for the next person.
-      <small>Used when the phone's contact picker can't open here (Chrome only allows it on a full-screen page).</small></div>
-    <div class="hint" id="ios-hint" hidden><b>On iPhone:</b> when the keyboard opens, tap <b>AutoFill Contact</b> just above it, then <b>Other Contact…</b>. Your Contacts list opens. Pick your friend and they're added to your list. Repeat for up to 20 people.
-      <small>No AutoFill button? Turn on Settings › Apps › Safari › AutoFill › <b>Use Contact Info</b>.</small></div>
+    <!-- 1. Choose several contacts (primary) -->
+    <div class="method" id="m1">
+      <button class="btn btn-amber" id="btn-picker" type="button" hidden>Choose several contacts</button>
+      <a class="btn btn-amber" id="btn-shortcut" href="#" hidden>Choose several contacts</a>
+      <p class="privacy" id="picker-note" hidden style="margin:6px 0 0">Your contact list opens. Tick up to 20 people, then tap Done.</p>
+      <p class="privacy" id="sc-note" hidden style="margin:6px 0 0">Your Contacts open. Tick up to 20 people, then tap Done.</p>
+      <div class="hint" id="sc-setup" hidden><b>First time on this iPhone?</b> iPhones only let a web page open Contacts through Apple's free Shortcuts app. Tap below once, then tap <b>Add Shortcut</b>, come back here, and tap <b>Choose several contacts</b>. After that it's one tap.
+        <a class="btn btn-ghost" id="btn-shortcut-install" href="#" style="margin-top:10px">Add the contact picker (one time)</a></div>
+      <div class="hint" id="browser-hint" hidden><b>This browser can't open your Contacts.</b> <span id="browser-why"></span>
+        <a class="btn btn-primary" id="open-browser" href="#" style="margin-top:10px">Open in Chrome</a></div>
+    </div>
+    <!-- 2. Open Messages with Steven added -->
+    <div class="hint" id="quick-hint" hidden><b>Or start in Messages:</b> the text opens with Steven already added. Tap the <b>To:</b> line, pick your friend from your Contacts, and hit send.
+      <a class="btn btn-primary" id="btn-quick" href="#" target="_blank" rel="noopener" style="margin-top:10px">Open Messages with Steven added</a>
+      <small>One friend per text keeps it personal. Come back and tap again for the next friend.</small></div>
+    <!-- 3. Type a name and number -->
+    <h3 class="or" id="manual-title">Or type a name and number</h3>
+    <div class="hint" id="ios-hint" hidden><small style="margin:0">Tip: tap the <b>First</b> box, then <b>AutoFill Contact</b> above the keyboard to fill in someone from your Contacts.</small></div>
+    <div class="hint" id="and-hint" hidden><small style="margin:0">Tip: in your <b>Contacts</b> app, press and hold a number to <b>Copy</b> it, then tap <b>Paste</b> here.</small></div>
     <form id="manual" autocomplete="on" novalidate>
       <label for="m-name">Name</label>
       <div class="row" style="gap:8px"><input type="text" id="m-name" name="given-name" autocomplete="given-name" autocapitalize="words" enterkeyhint="next" placeholder="First" style="flex:1 1 120px"><input type="text" id="m-last" name="family-name" autocomplete="family-name" autocapitalize="words" enterkeyhint="next" placeholder="Last" style="flex:1 1 120px"></div>
@@ -175,20 +185,13 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
       <p class="err" id="add-err" role="alert"></p>
       <button class="btn btn-ghost" id="btn-add" type="submit">Add person</button>
     </form>
-    <ul class="people" id="people" aria-label="People you picked"></ul>
-    <div class="sticky"><button class="btn btn-primary" id="to-send" type="button" disabled>Send</button></div>
-    <details class="manual" id="more-ways" hidden><summary>Other ways to add people</summary>
-      <div class="hint" id="quick-hint" hidden><b>Add your friend inside Messages:</b> the text opens with Steven already added. Tap the <b>+</b> on the <b>To:</b> line, pick your friend from your Contacts, and hit send.
-        <a class="btn btn-primary" id="btn-quick" href="#" target="_blank" rel="noopener" style="margin-top:10px">Open Messages with Steven added</a>
-        <small>One friend per text keeps it personal. Come back and tap again for the next friend.</small></div>
-      <div class="hint" id="sc-details" hidden><b>Tick several people at once (optional):</b> add a free Apple Shortcut one time and this page can open your full Contacts list with checkboxes.
-        <a class="btn btn-ghost" id="btn-shortcut-install" href="#" style="margin-top:10px">1. Add the contact picker</a>
-        <a class="btn btn-ghost" id="btn-shortcut-run" href="#" style="margin-top:8px">2. Choose several contacts</a></div>
-      <div class="hint" id="vcf-hint" hidden><b>Bring in a contacts file:</b>
-        <ol style="margin:6px 0 0;padding-left:20px"><li>Open the <b>Contacts</b> app, press and hold a name, tap <b>Select Contacts</b>, and tick up to 20 people.</li><li>Tap <b>Share</b>, then <b>Save to Files</b>.</li><li>Come back here and tap <b>Choose contacts file</b>, then pick that file.</li></ol>
+    <details class="manual" id="vcf-more" hidden><summary>Have a contacts file?</summary>
+      <div class="hint" id="vcf-hint"><ol style="margin:0;padding-left:20px"><li>Open the <b>Contacts</b> app, press and hold a name, tap <b>Select Contacts</b>, and tick up to 20 people.</li><li>Tap <b>Share</b>, then <b>Save to Files</b>.</li><li>Come back here and tap <b>Choose contacts file</b>, then pick that file.</li></ol>
         <button class="btn btn-ghost" id="vcf-btn" type="button" style="margin-top:10px">Choose contacts file</button>
         <input type="file" id="vcf" accept=".vcf,text/vcard,text/x-vcard,text/directory" multiple hidden></div>
     </details>
+    <ul class="people" id="people" aria-label="People you picked"></ul>
+    <div class="sticky"><button class="btn btn-primary" id="to-send" type="button" disabled>Send</button></div>
     <p class="privacy">Your contacts stay on your phone. Nothing is uploaded.</p>
   </section>
 
@@ -363,29 +366,26 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
   // ---------- step 1: pick ----------
   function renderPick(){
     var native = hasPicker && !pickerBlocked;
-    $("btn-picker").hidden = !native;
-    // iPhone: Safari can't open Contacts for a web page, so the default needs no install (AutoFill Contact, or
-    // adding the friend inside Messages). The Shortcut is optional; it becomes the main button only once it has been used here.
-    var scOk = isIOS && !native && !!SHORTCUT_INSTALL && !inFrame;
-    var gateway = scOk && hasShortcut() && !S.scManual;
-    $("btn-shortcut").hidden = !gateway; $("sc-note").hidden = !gateway;
-    $("sc-details").hidden = !(scOk && !gateway);
-    $("btn-shortcut").href = $("btn-shortcut-run").href = SHORTCUT_RUN; $("btn-shortcut-install").href = SHORTCUT_INSTALL;
-    $("quick-hint").hidden = !(isMobile && !native);
-    $("more-ways").hidden = !(isMobile && !native);
-    $("picker-note").hidden = !native;
-    $("btn-quick").href = quickLink();
-    $("btn-picker-ios").hidden = !(isIOS && !native && !gateway);
-    $("ios-hint").hidden = !(isIOS && !native && !gateway);
     var noBrowser = (isAndroid && !hasPicker && !inFrame) || (isIOS && inApp);
+    // 1. Choose several contacts. Android Chrome: the phone's contact picker (multi-select).
+    // iPhone: Safari can't open Contacts for a web page, so this runs the free Apple Shortcut, which
+    // opens Contacts with multi-select and hands the people back to this page.
+    var scOk = isIOS && !native && !!SHORTCUT_INSTALL && !inFrame && !inApp;
+    $("btn-picker").hidden = !native; $("picker-note").hidden = !native;
+    $("btn-shortcut").hidden = !scOk; $("btn-shortcut").href = SHORTCUT_RUN; $("btn-shortcut-install").href = SHORTCUT_INSTALL;
+    $("sc-setup").hidden = !(scOk && !hasShortcut()); $("sc-note").hidden = !(scOk && hasShortcut());
     $("browser-hint").hidden = !noBrowser;
     if(noBrowser){
       var ob = $("open-browser");
       if(isAndroid){ $("browser-why").textContent = "Chrome can open your contact list; this browser can't."; ob.textContent = "Open in Chrome"; ob.href = "intent://" + SITE.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=" + encodeURIComponent(SITE) + ";end"; }
       else { $("browser-why").textContent = "Safari can; open the page there."; ob.textContent = "Open in Safari"; ob.href = "x-safari-" + SITE; }
     }
-    $("and-hint").hidden = !(isAndroid && !native && !noBrowser);
-    $("vcf-hint").hidden = !(isIOS && !native);
+    // 2. Open Messages with Steven added.
+    $("quick-hint").hidden = !isMobile; $("btn-quick").href = quickLink();
+    // 3. Type a name and number.
+    $("manual-title").textContent = isMobile ? "Or type a name and number" : "Add a name and number";
+    $("ios-hint").hidden = !isIOS; $("and-hint").hidden = !(isAndroid && canPaste);
+    $("vcf-more").hidden = !isIOS;
     $("btn-paste").hidden = !(isMobile && canPaste);
     var ul = $("people"); ul.innerHTML = "";
     S.people.forEach(function(p, idx){
@@ -404,6 +404,7 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
     var n = S.people.length, c = $("count");
     c.textContent = n + " of " + MAX + " selected"; c.className = "counter" + (n >= MAX ? " full" : "");
     $("to-send").disabled = n === 0;
+    $("to-send").parentNode.hidden = n === 0;  // like the app: the Send bar appears once someone is picked
     $("to-send").textContent = n ? "Send to " + n + (n === 1 ? " friend" : " friends") : "Send";
     $("desk-note").hidden = isMobile;
     renderTone();
@@ -483,12 +484,6 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
       r.readAsText(f);
     });
   });
-  $("btn-picker-ios").addEventListener("click", function(ev){
-    if(S.people.length >= MAX){ ev.preventDefault(); $("add-err").textContent = "That's " + MAX + ", the most for one round."; return; }
-    var h = $("ios-hint"); h.classList.add("hot"); setTimeout(function(){ h.classList.remove("hot"); }, 3000);
-    try { $("m-name").focus(); } catch(e) {}  // the <label> also focuses it natively, which is what opens the keyboard on iPhone
-    toast("Now tap AutoFill Contact above the keyboard, then Other Contact…", 3200);
-  });
   $("btn-picker").addEventListener("click", function(){
     if(S.people.length >= MAX){ $("add-err").textContent = "That's " + MAX + ", the most for one round."; return; }
     navigator.contacts.select(["name","tel"], {multiple: true}).then(function(list){
@@ -504,8 +499,8 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
     }).catch(function(err){
       // Closed by the user -> nothing to do. Refused by the browser (frame, no gesture) -> switch to copy-and-paste.
       if(err && (err.name === "InvalidStateError" || err.name === "SecurityError" || err.name === "NotAllowedError")){
-        pickerBlocked = true; renderPick(); toast("Chrome won't open Contacts from this page. Copy and paste the number instead", 3200);
-        var h = $("and-hint"); h.classList.add("hot"); setTimeout(function(){ h.classList.remove("hot"); }, 2500);
+        pickerBlocked = true; renderPick(); toast("Chrome won't open Contacts from this page. Type or paste the number instead", 3200);
+        $("m-phone").focus();
       }
     });
   });
@@ -724,9 +719,7 @@ footer{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 28px;fo
 
   var fs = $("fwd-stay"); if(fs) fs.addEventListener("click", function(){ S.stay = true; save(); showForward(S.screen); });
   var fw = $("fwd"); if(fw) fw.addEventListener("click", function(){ fw.textContent = "Opening…"; setTimeout(function(){ fw.textContent = "Continue →"; }, 2500); });
-  $("sc-manual").addEventListener("click", function(){ S.scManual = true; save(); renderPick(); });
   $("btn-shortcut").addEventListener("click", function(){ toast("Opening your Contacts…", 2500); });
-  $("btn-shortcut-run").addEventListener("click", function(){ toast("Opening your Contacts…", 2500); });
   // "Start in Messages": the friend is added inside Messages, so there is nothing to track here beyond a thank-you.
   var quickOut = false;
   $("btn-quick").addEventListener("click", function(){ $("btn-quick").href = quickLink(); quickOut = true; });

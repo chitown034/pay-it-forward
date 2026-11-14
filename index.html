@@ -161,11 +161,10 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
     <!-- 1. Choose several contacts (primary) -->
     <div class="method" id="m1">
       <button class="btn btn-amber" id="btn-picker" type="button" hidden>Choose several contacts</button>
-      <a class="btn btn-amber" id="btn-shortcut" href="#" hidden>Choose several contacts</a>
+      <label class="btn btn-amber" id="btn-picker-ios" for="m-name" hidden style="margin:0">Choose from my contacts</label>
       <p class="privacy" id="picker-note" hidden style="margin:6px 0 0">Your contact list opens. Tick up to 20 people, then tap Done.</p>
-      <p class="privacy" id="sc-note" hidden style="margin:6px 0 0">Your Contacts open. Tick up to 20 people, then tap Done.</p>
-      <div class="hint" id="sc-setup" hidden><b>First time on this iPhone?</b> iPhones only let a web page open Contacts through Apple's free Shortcuts app. Tap below once, then tap <b>Add Shortcut</b>, come back here, and tap <b>Choose several contacts</b>. After that it's one tap.
-        <a class="btn btn-ghost" id="btn-shortcut-install" href="#" style="margin-top:10px">Add the contact picker (one time)</a></div>
+      <div class="hint" id="ios-pick-hint" hidden><b>On iPhone:</b> when the keyboard opens, tap <b>AutoFill Contact</b> just above it, then <b>Other Contact…</b> and pick a friend. They're added right away and the box is ready for the next friend. Nothing to install.
+        <small>No AutoFill button? Turn on Settings › Apps › Safari › AutoFill › <b>Use Contact Info</b>.</small></div>
       <div class="hint" id="browser-hint" hidden><b>This browser can't open your Contacts.</b> <span id="browser-why"></span>
         <a class="btn btn-primary" id="open-browser" href="#" style="margin-top:10px">Open in Chrome</a></div>
     </div>
@@ -175,7 +174,6 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
       <small>One friend per text keeps it personal. Come back and tap again for the next friend.</small></div>
     <!-- 3. Type a name and number -->
     <h3 class="or" id="manual-title">Or type a name and number</h3>
-    <div class="hint" id="ios-hint" hidden><small style="margin:0">Tip: tap the <b>First</b> box, then <b>AutoFill Contact</b> above the keyboard to fill in someone from your Contacts.</small></div>
     <div class="hint" id="and-hint" hidden><small style="margin:0">Tip: in your <b>Contacts</b> app, press and hold a number to <b>Copy</b> it, then tap <b>Paste</b> here.</small></div>
     <form id="manual" autocomplete="on" novalidate>
       <label for="m-name">Name</label>
@@ -185,7 +183,7 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
       <p class="err" id="add-err" role="alert"></p>
       <button class="btn btn-ghost" id="btn-add" type="submit">Add person</button>
     </form>
-    <details class="manual" id="vcf-more" hidden><summary>Have a contacts file?</summary>
+    <details class="manual" id="vcf-more" hidden><summary>Adding a lot of people? Import several at once</summary>
       <div class="hint" id="vcf-hint"><ol style="margin:0;padding-left:20px"><li>Open the <b>Contacts</b> app, press and hold a name, tap <b>Select Contacts</b>, and tick up to 20 people.</li><li>Tap <b>Share</b>, then <b>Save to Files</b>.</li><li>Come back here and tap <b>Choose contacts file</b>, then pick that file.</li></ol>
         <button class="btn btn-ghost" id="vcf-btn" type="button" style="margin-top:10px">Choose contacts file</button>
         <input type="file" id="vcf" accept=".vcf,text/vcard,text/x-vcard,text/directory" multiple hidden></div>
@@ -247,10 +245,6 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
   // In-app browsers (Instagram, Facebook, LinkedIn, TikTok, Gmail…) and non-Chrome Android browsers can't open Contacts.
   var inApp = /FBAN|FBAV|Instagram|LinkedInApp|Twitter|TikTok|BytedanceWebview|Line\/|Snapchat|GSA\//i.test(ua) || (isIOS && !/Safari\//.test(ua)) || (isAndroid && /; wv\)/.test(ua));
   var SITE = "https://chitown034.github.io/pay-it-forward/";
-  // iPhone gateway: an Apple Shortcut that opens the real Contacts picker and hands the people back to this page.
-  // SHORTCUT_INSTALL = the Shortcut's iCloud share link (set once it exists); SHORTCUT_NAME must match the Shortcut's name.
-  var SHORTCUT_NAME = "Pay It Forward Contacts", SHORTCUT_INSTALL = "https://www.icloud.com/shortcuts/69690ac6bcf14aa49c5890737bd740ff";
-  var SHORTCUT_RUN = "shortcuts://run-shortcut?name=" + encodeURIComponent(SHORTCUT_NAME);
   var isMobile = isIOS || isAndroid;
   var hasPicker = false, inFrame = false, pickerBlocked = false, canPaste = false;
   try { hasPicker = ("contacts" in navigator) && ("ContactsManager" in window) && typeof navigator.contacts.select === "function"; } catch(e) {}
@@ -287,10 +281,6 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
   var S = sanitize(load()) || fresh();
   function save(){ try { sessionStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} }
   function wipe(){ try { sessionStorage.removeItem(KEY); } catch(e) {} }
-  // Remembers only that the optional iPhone Shortcut has been used on this phone (a flag, never any contact).
-  var SC_KEY = "pif-sc";
-  function hasShortcut(){ try { return localStorage.getItem(SC_KEY) === "1"; } catch(e) { return false; } }
-  function rememberShortcut(){ try { localStorage.setItem(SC_KEY, "1"); } catch(e) {} }
 
   function firstName(full){ var n = String(full||"").trim().split(/\s+/)[0] || ""; return n.slice(0,40); }
   function lastName(full){ var p = String(full||"").trim().split(/\s+/); return p.length > 1 ? p.slice(1).join(" ").slice(0,40) : ""; }
@@ -367,13 +357,12 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
   function renderPick(){
     var native = hasPicker && !pickerBlocked;
     var noBrowser = (isAndroid && !hasPicker && !inFrame) || (isIOS && inApp);
-    // 1. Choose several contacts. Android Chrome: the phone's contact picker (multi-select).
-    // iPhone: Safari can't open Contacts for a web page, so this runs the free Apple Shortcut, which
-    // opens Contacts with multi-select and hands the people back to this page.
-    var scOk = isIOS && !native && !!SHORTCUT_INSTALL && !inFrame && !inApp;
+    // 1. Choose from my contacts. Android Chrome: the phone's contact picker (tick several at once).
+    // iPhone: Safari can't open the Contacts list for a web page, so the button opens the keyboard on the
+    // name box, where AutoFill Contact picks a friend from Contacts (no install); each one is added automatically.
+    var iosAuto = isIOS && !native && !inApp;
     $("btn-picker").hidden = !native; $("picker-note").hidden = !native;
-    $("btn-shortcut").hidden = !scOk; $("btn-shortcut").href = SHORTCUT_RUN; $("btn-shortcut-install").href = SHORTCUT_INSTALL;
-    $("sc-setup").hidden = !(scOk && !hasShortcut()); $("sc-note").hidden = !(scOk && hasShortcut());
+    $("btn-picker-ios").hidden = !iosAuto; $("ios-pick-hint").hidden = !iosAuto;
     $("browser-hint").hidden = !noBrowser;
     if(noBrowser){
       var ob = $("open-browser");
@@ -384,7 +373,7 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
     $("quick-hint").hidden = !isMobile; $("btn-quick").href = quickLink();
     // 3. Type a name and number.
     $("manual-title").textContent = isMobile ? "Or type a name and number" : "Add a name and number";
-    $("ios-hint").hidden = !isIOS; $("and-hint").hidden = !(isAndroid && canPaste);
+    $("and-hint").hidden = !(isAndroid && canPaste);
     $("vcf-more").hidden = !isIOS;
     $("btn-paste").hidden = !(isMobile && canPaste);
     var ul = $("people"); ul.innerHTML = "";
@@ -504,7 +493,7 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
       }
     });
   });
-  // Pasted text can be one number, or several lines of "Name  number" (e.g. from the iPhone Shortcut or a shared contact)
+  // Pasted text can be one number, or several lines of "Name  number" (e.g. from a shared contact)
   function importText(t){
     var lines = String(t || "").split(/\n+/).map(function(l){ return l.trim(); }).filter(Boolean), found = [];
     lines.forEach(function(l){
@@ -719,7 +708,12 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
 
   var fs = $("fwd-stay"); if(fs) fs.addEventListener("click", function(){ S.stay = true; save(); showForward(S.screen); });
   var fw = $("fwd"); if(fw) fw.addEventListener("click", function(){ fw.textContent = "Opening…"; setTimeout(function(){ fw.textContent = "Continue →"; }, 2500); });
-  $("btn-shortcut").addEventListener("click", function(){ toast("Opening your Contacts…", 2500); });
+  $("btn-picker-ios").addEventListener("click", function(ev){
+    if(S.people.length >= MAX){ ev.preventDefault(); $("add-err").textContent = "That's " + MAX + ", the most for one round."; return; }
+    var h = $("ios-pick-hint"); h.classList.add("hot"); setTimeout(function(){ h.classList.remove("hot"); }, 3000);
+    try { $("m-name").focus(); } catch(e) {}  // the <label> also focuses it natively, which is what opens the keyboard on iPhone
+    toast("Tap AutoFill Contact above the keyboard, then Other Contact…", 3200);
+  });
   // "Start in Messages": the friend is added inside Messages, so there is nothing to track here beyond a thank-you.
   var quickOut = false;
   $("btn-quick").addEventListener("click", function(){ $("btn-quick").href = quickLink(); quickOut = true; });
@@ -727,7 +721,7 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
     if(document.visibilityState === "visible" && quickOut){ quickOut = false; toast("Sent? Thank you. Tap again to introduce someone else.", 3200); }
   });
 
-  // People handed back by the Shortcut arrive in the address fragment (#people=Name|number;Name|number).
+  // People can also arrive in the address fragment (#people=First|Last|number;...), e.g. from a shared link.
   // The fragment never leaves the phone (browsers don't send it to the server); it is removed as soon as it's read.
   function intakeHash(){
     var h = location.hash || ""; if(h.indexOf("#people=") !== 0) return false;
@@ -744,14 +738,13 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
       if(!first || !phones.length){ issues++; return; }
       var e = addPerson(first, phones, last); if(e) issues++; else added++;
     });
-    if(added || issues || over) rememberShortcut();
     S.screen = "s-pick"; save(); go("s-pick");
     $("add-err").textContent = over ? "Only the first " + MAX + " were added." : (issues ? issues + (issues === 1 ? " contact had" : " contacts had") + " no usable mobile number or was already listed." : "");
     if(added) toast(added + (added === 1 ? " person" : " people") + " added from your Contacts", 2600);
     return true;
   }
   if(!intakeHash()) go(S.screen || "s-pick");
-  // The Shortcut may hand people back to this same tab (only the #people= part changes, no reload).
+  // The fragment may change without a reload.
   window.addEventListener("hashchange", intakeHash);
 })();
 </script>

@@ -161,6 +161,10 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
     <!-- 1. Choose several contacts (primary) -->
     <div class="method" id="m1">
       <button class="btn btn-amber" id="btn-picker" type="button" hidden>Choose several contacts</button>
+      <a class="btn btn-amber" id="btn-shortcut" href="#" hidden>Choose several contacts</a>
+      <p class="privacy" id="sc-note" hidden style="margin:6px 0 0">Your Contacts open. Tick your friends and tap Done. Each friend's 3-way text then opens with the message and their first name filled in. Just tap Send on each one.</p>
+      <div class="hint" id="sc-setup" hidden><b>First time on this iPhone?</b> iPhones only let a web page open Contacts with checkboxes through Apple's free Shortcuts app. Tap below, then <b>Add Shortcut</b>, come back here, and tap <b>Choose several contacts</b>. You only do this once.
+        <a class="btn btn-ghost" id="btn-shortcut-install" href="#" style="margin-top:10px">Add the contact picker (one time)</a></div>
       <label class="btn btn-amber" id="btn-picker-ios" for="m-name" hidden style="margin:0">Choose from my contacts</label>
       <p class="privacy" id="picker-note" hidden style="margin:6px 0 0">Your contact list opens. Tick up to 20 people, then tap Done.</p>
       <div class="hint" id="ios-pick-hint" hidden><b>On iPhone:</b> when the keyboard opens, tap <b>AutoFill Contact</b> just above it, then <b>Other Contact…</b> and pick a friend. They're added right away and the box is ready for the next friend. Nothing to install.
@@ -174,6 +178,7 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
       <small>One friend per text keeps it personal. Come back and tap again for the next friend.</small></div>
     <!-- 3. Type a name and number -->
     <h3 class="or" id="manual-title">Or type a name and number</h3>
+    <div class="hint" id="ios-tip" hidden><small style="margin:0">Tip: tap the <b>First</b> box, then <b>AutoFill Contact</b> above the keyboard to fill in someone from your Contacts.</small></div>
     <div class="hint" id="and-hint" hidden><small style="margin:0">Tip: in your <b>Contacts</b> app, press and hold a number to <b>Copy</b> it, then tap <b>Paste</b> here.</small></div>
     <form id="manual" autocomplete="on" novalidate>
       <label for="m-name">Name</label>
@@ -212,7 +217,7 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
   <section id="s-done" class="card" hidden>
     <h2>Thank you. That means a lot.</h2>
     <p class="sub">Steven will reply in each thread and take it from there. You don't need to do anything else.</p>
-    <div class="stats"><div><b id="n-sent">0</b>introduced</div><div><b id="n-skip">0</b>skipped</div></div>
+    <div class="stats" id="done-stats"><div><b id="n-sent">0</b>introduced</div><div><b id="n-skip">0</b>skipped</div></div>
     <button class="btn btn-ghost" id="more" type="button">Pay it forward to more people</button>
     <a class="btn btn-amber" id="call-steven" href="tel:+16193687141" style="margin-top:10px">Call Steven · (619) 368-7141</a>
     <p style="margin:10px 0 0;text-align:center" class="sub">Or save his number: <b>(619) 368-7141</b> <button class="copy" type="button" data-copy="steven">Copy</button></p>
@@ -245,6 +250,12 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
   // In-app browsers (Instagram, Facebook, LinkedIn, TikTok, Gmail…) and non-Chrome Android browsers can't open Contacts.
   var inApp = /FBAN|FBAV|Instagram|LinkedInApp|Twitter|TikTok|BytedanceWebview|Line\/|Snapchat|GSA\//i.test(ua) || (isIOS && !/Safari\//.test(ua)) || (isAndroid && /; wv\)/.test(ua));
   var SITE = "https://chitown034.github.io/pay-it-forward/";
+  // iPhone: "Choose several contacts" runs the free Apple Shortcut "Pay It Forward Contacts". It opens Contacts
+  // with checkboxes, then opens each friend's 3-way text (friend + Steven) with the message and first name filled in,
+  // and comes back here (#sent). The page passes the chosen message, with [First Name] in it, as the Shortcut's input.
+  // SHORTCUT_INSTALL = the signed Shortcut's iCloud link; until it is set, iPhones use AutoFill Contact instead.
+  var SHORTCUT_NAME = "Pay It Forward Contacts", SHORTCUT_INSTALL = "";
+  var SHORTCUT_RUN = "shortcuts://run-shortcut?name=" + encodeURIComponent(SHORTCUT_NAME);
   var isMobile = isIOS || isAndroid;
   var hasPicker = false, inFrame = false, pickerBlocked = false, canPaste = false;
   try { hasPicker = ("contacts" in navigator) && ("ContactsManager" in window) && typeof navigator.contacts.select === "function"; } catch(e) {}
@@ -284,6 +295,11 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
 
   function firstName(full){ var n = String(full||"").trim().split(/\s+/)[0] || ""; return n.slice(0,40); }
   function lastName(full){ var p = String(full||"").trim().split(/\s+/); return p.length > 1 ? p.slice(1).join(" ").slice(0,40) : ""; }
+  // Remembers only that the Shortcut has worked on this phone (a flag, never any contact).
+  var SC_KEY = "pif-sc2";
+  function hasShortcut(){ try { return localStorage.getItem(SC_KEY) === "1"; } catch(e) { return false; } }
+  function rememberShortcut(){ try { localStorage.setItem(SC_KEY, "1"); } catch(e) {} }
+  function shortcutHref(){ return SHORTCUT_RUN + "&input=text&text=" + encodeURIComponent(template()); }
   function initials(p){ return ((p.first || "").charAt(0) + (p.last || "").charAt(0)).toUpperCase().replace(/[^A-Z\u00C0-\u024F]/g, ""); }
   function fullName(p){ return (p.first + (p.last ? " " + p.last : "")).trim(); }
   function normalize(raw){
@@ -360,7 +376,11 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
     // 1. Choose from my contacts. Android Chrome: the phone's contact picker (tick several at once).
     // iPhone: Safari can't open the Contacts list for a web page, so the button opens the keyboard on the
     // name box, where AutoFill Contact picks a friend from Contacts (no install); each one is added automatically.
-    var iosAuto = isIOS && !native && !inApp;
+    var scMode = isIOS && !native && !inApp && !inFrame && (!!SHORTCUT_INSTALL || hasShortcut());
+    var iosAuto = isIOS && !native && !inApp && !scMode;
+    $("btn-shortcut").hidden = !scMode; $("sc-note").hidden = !scMode; $("sc-setup").hidden = !(scMode && !hasShortcut());
+    $("btn-shortcut").href = shortcutHref(); $("btn-shortcut-install").href = SHORTCUT_INSTALL || "#";
+    $("ios-tip").hidden = !scMode;
     $("btn-picker").hidden = !native; $("picker-note").hidden = !native;
     $("btn-picker-ios").hidden = !iosAuto; $("ios-pick-hint").hidden = !iosAuto;
     $("browser-hint").hidden = !noBrowser;
@@ -531,6 +551,7 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
     var p = S.people[0], who = p ? call(p) : "Alex";
     $("tone-sample").textContent = fill(template(), who);
     $("tone-to").textContent = "To: " + who + ", Steven & you";
+    $("btn-shortcut").href = shortcutHref();
     if(document.activeElement !== $("tpl")) $("tpl").value = template();
     tplLen();
     $("tpl-wrap").hidden = S.custom == null && $("tpl-wrap").hidden;
@@ -546,7 +567,7 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
   $("tpl").addEventListener("input", function(){
     var v = $("tpl").value; S.custom = (v.trim() && v !== TONES[S.tone]) ? v : null;
     S.people.forEach(function(p){ if(p.status === "pending") p.draft = null; });
-    var p = S.people[0]; $("tone-sample").textContent = fill(template(), p ? call(p) : "Alex"); tplLen(); save();
+    var p = S.people[0]; $("tone-sample").textContent = fill(template(), p ? call(p) : "Alex"); tplLen(); save(); $("btn-shortcut").href = shortcutHref();
   });
   $("tpl-reset").addEventListener("click", function(){ S.custom = null; S.people.forEach(function(p){ if(p.status === "pending") p.draft = null; }); save(); renderTone(); });
   function startSend(){ S.i = nextPending(-1); S.last = -1; save(); go(S.i < 0 ? "s-done" : "s-send"); }
@@ -699,7 +720,9 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
   $("btn-finish").addEventListener("click", function(){ go("s-done"); });
 
   // ---------- done ----------
+  var doneFromShortcut = false;
   function renderDone(){
+    $("done-stats").hidden = doneFromShortcut; doneFromShortcut = false;
     $("n-sent").textContent = S.people.filter(function(p){ return p.status === "sent"; }).length;
     $("n-skip").textContent = S.people.filter(function(p){ return p.status === "skipped"; }).length;
     S = fresh(); S.screen = "s-done"; wipe(); // nothing kept once you're finished
@@ -708,6 +731,7 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
 
   var fs = $("fwd-stay"); if(fs) fs.addEventListener("click", function(){ S.stay = true; save(); showForward(S.screen); });
   var fw = $("fwd"); if(fw) fw.addEventListener("click", function(){ fw.textContent = "Opening…"; setTimeout(function(){ fw.textContent = "Continue →"; }, 2500); });
+  $("btn-shortcut").addEventListener("click", function(){ $("btn-shortcut").href = shortcutHref(); toast("Opening your Contacts…", 2500); });
   $("btn-picker-ios").addEventListener("click", function(ev){
     if(S.people.length >= MAX){ ev.preventDefault(); $("add-err").textContent = "That's " + MAX + ", the most for one round."; return; }
     var h = $("ios-pick-hint"); h.classList.add("hot"); setTimeout(function(){ h.classList.remove("hot"); }, 3000);
@@ -724,7 +748,13 @@ h3.or{font-size:16px;margin:16px 0 0;color:var(--ink)}
   // People can also arrive in the address fragment (#people=First|Last|number;...), e.g. from a shared link.
   // The fragment never leaves the phone (browsers don't send it to the server); it is removed as soon as it's read.
   function intakeHash(){
-    var h = location.hash || ""; if(h.indexOf("#people=") !== 0) return false;
+    var h = location.hash || "";
+    if(h === "#sent"){  // the Shortcut finished opening every friend's text
+      try { history.replaceState(null, "", location.pathname + location.search); } catch(e) {}
+      rememberShortcut(); S = fresh(); doneFromShortcut = true; go("s-done");
+      return true;
+    }
+    if(h.indexOf("#people=") !== 0) return false;
     var raw = ""; try { raw = decodeURIComponent(h.slice(8)); } catch(e) { raw = h.slice(8); }
     try { history.replaceState(null, "", location.pathname + location.search); } catch(e) {}
     var added = 0, issues = 0, over = 0;

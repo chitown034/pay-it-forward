@@ -32,8 +32,8 @@ iPhones only import signed Shortcuts, and signing needs a Mac.
 5. In the Shortcuts app, right-click it, choose **Share**, then **Copy iCloud Link**. Put that link in
    `SHORTCUT_INSTALL` in `index.html` so visitors see the one-time **Add the contact picker** button.
 
-Until `SHORTCUT_INSTALL` is set, iPhones that haven't run the Shortcut yet use AutoFill Contact
-instead. An iPhone that has run it once (it ends by opening the page) gets **Choose several contacts**.
+Current signed version: https://www.icloud.com/shortcuts/4538593acfc94eeb99efc9437f36112e
+(set as `SHORTCUT_INSTALL`). If you re-sign it, share again and replace that link.
 
 ## Rebuild
 
